@@ -30,6 +30,17 @@ class FileformatterTest(unittest.TestCase):
         result = fileformatter.format("fixture/3.yaml", env)
         self.assertEqual(result, expected_result)
 
+    def test_fileformatter_function_with_file_not_exist(self):
+        expected_result = Path("fixture/expect_4.yaml").read_text()
+        env = {
+            "NAMESPACE": "unknown",
+            "IMAGE_TAG": "5.30.0-100"
+        }
+        result = fileformatter.format("fixture/4.yaml", env)
+        self.assertEqual(result, expected_result)
+
+
+
     # def test_numbers_3_4(self):
     #     self.assertEqual(multiply(3,4), 12)
 

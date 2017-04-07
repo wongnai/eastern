@@ -16,11 +16,17 @@ def map_override(line, path):
 
     # read file name
     splited_line = line.split("# load! ")
-    override_file = splited_line[1]
+    override_file_path = splited_line[1]
+
+    # do nothing when no override file found
+    override_file = Path(path + os.sep + override_file_path)
+    if not override_file.exists():
+        return line
+
     # get indent
     indent = splited_line[0]
     # read file
-    override_text = Path(path + os.sep + override_file).read_text()
+    override_text = override_file.read_text()
     # prepend indent
     override_file_lines = [indent + l for l in override_text.split(os.linesep)]
     # insert into file array
