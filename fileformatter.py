@@ -10,7 +10,25 @@ def flatten(l):
         else:
             yield el
 
-def map_override(line, path):
+def resolve_load_file(path, override_file_path):
+    default_override_file = False
+    if "," in override_file_path:
+        argv = override_file_path.split(",")
+        override_file_path = argv[0].strip()
+        default_override_file = argv[1].strip()
+
+    # do nothing when no override file found
+    override_file = Path(path + os.sep + override_file_path)
+    if not override_file.exists():
+        if not default_override_file:
+            return False
+        override_file = Path(path + os.sep + default_override_file)
+        if not override_file.exists():
+            return False
+
+    return override_file
+
+def map_override(line, path, env):
     if not line.find("# load!") > -1:
         return line
 
@@ -18,15 +36,15 @@ def map_override(line, path):
     splited_line = line.split("# load! ")
     override_file_path = splited_line[1]
 
-    # do nothing when no override file found
-    override_file = Path(path + os.sep + override_file_path)
-    if not override_file.exists():
-        return line
+    override_file = resolve_load_file(path, override_file_path)
 
+    if not override_file:
+        return line
+    
     # get indent
     indent = splited_line[0]
     # read file
-    override_text = override_file.read_text()
+    override_text = format(str(override_file), env)
     # prepend indent
     override_file_lines = [indent + l for l in override_text.split(os.linesep)]
     # insert into file array
@@ -41,6 +59,6 @@ def format(filename, env = {}):
     file_text = replace_with_env(Path(filename).read_text(), env)
     dir_path = os.path.dirname(os.path.realpath(filename))
     file_text_array = file_text.split(os.linesep)
-    new_file_text_array = flatten(map(lambda line : map_override(line, dir_path), file_text_array))
+    new_file_text_array = flatten(map(lambda line : map_override(line, dir_path, env), file_text_array))
 
     return os.linesep.join(new_file_text_array)
