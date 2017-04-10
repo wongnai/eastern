@@ -29,18 +29,30 @@ def resolve_load_file(path, override_file_path):
     return override_file
 
 def map_override(line, path, env):
-    if not line.find("# load!") > -1:
+    require_sep = "# load!"
+    optional_sep = "# load?"
+
+    if line.find(require_sep) > -1:
+        required = True
+        sectionSeperator = require_sep + " "
+    elif line.find(optional_sep) > -1:
+        required = False
+        sectionSeperator = optional_sep + " "
+    else:
         return line
 
     # read file name
-    splited_line = line.split("# load! ")
+    splited_line = line.split(sectionSeperator)
     override_file_path = splited_line[1]
 
     override_file = resolve_load_file(path, override_file_path)
 
     if not override_file:
-        return line
-    
+        if required == True:
+            raise Exception("Override file not found: " + override_file_path)
+        else:
+            return line
+
     # get indent
     indent = splited_line[0]
     # read file

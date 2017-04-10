@@ -1,4 +1,5 @@
 import unittest
+import exceptions
 import fileformatter
 from pathlib2 import Path
 
@@ -30,14 +31,15 @@ class FileformatterTest(unittest.TestCase):
         result = fileformatter.format("fixture/3.yaml", env)
         self.assertEqual(result, expected_result)
 
-    def test_fileformatter_function_with_file_not_exist(self):
+    def test_fileformatter_function_with_required_file_not_exist(self):
         expected_result = Path("fixture/expect_4.yaml").read_text()
         env = {
             "NAMESPACE": "unknown",
             "IMAGE_TAG": "5.30.0-100"
         }
-        result = fileformatter.format("fixture/4.yaml", env)
-        self.assertEqual(result, expected_result)
+        # result = fileformatter.format("fixture/4.yaml", env)
+        # self.assertEqual(result, expected_result)
+        self.assertRaises(Exception, fileformatter.format, "fixture/4.yaml", env)
     
     def test_fileformatter_function_with_default_file(self):
         expected_result = Path("fixture/expect_5.yaml").read_text()
@@ -48,6 +50,16 @@ class FileformatterTest(unittest.TestCase):
         result = fileformatter.format("fixture/5.yaml", env)
         self.assertEqual(result, expected_result)
 
+
+    def test_fileformatter_function_with_optional_file_not_exist(self):
+        expected_result = Path("fixture/expect_6.yaml").read_text()
+        env = {
+            "NAMESPACE": "unknown",
+            "IMAGE_TAG": "5.30.0-100"
+        }
+        result = fileformatter.format("fixture/6.yaml", env)
+        self.assertEqual(result, expected_result)
+        # self.assertRaises(Exception, fileformatter.format, "fixture/4.yaml", env)
 
 
     # def test_numbers_3_4(self):
