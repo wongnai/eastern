@@ -14,4 +14,5 @@ try:
     deploy_project.deploy(sys.argv[1], sys.argv[2], sys.argv[3])
 except subprocess.CalledProcessError as err:
     print(err)
+    print(err.output)
     exit(err.returncode)
