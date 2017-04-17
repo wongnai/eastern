@@ -13,6 +13,8 @@ CMD_POD_PHASE = "kubectl -n {} get pod {} -o jsonpath={{.status.phase}}"
 CMD_POD_RAW = "kubectl -n {} get pod {} -o yaml"
 CMD_POD_OUTPUT = "kubectl -n {} logs {}"
 CMD_DELETE_JOB = "kubectl -n {} delete job {}"
+CMD_KUBE_CREATE = "kubectl -n {} create -f {}"
+CMD_KUBE_APPLY = "kubectl -n {} apply -f {}"
 
 def write_file(file_path, data):
     '''
@@ -30,7 +32,7 @@ def run_shell(cmd, debug=False):
         print "Run command: " + cmd
     return subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
 
-def run_kube(file_path, env, temp_kube_config_file_path):
+def run_kube(file_path, env, temp_kube_config_file_path, use_create=False):
     '''
     run kube with given file path
     '''
@@ -52,7 +54,8 @@ def run_kube(file_path, env, temp_kube_config_file_path):
     try:
         # apply file to kube
         print "applying kube config"
-        result = run_shell("kubectl -n " + namespace + " apply -f " + temp_kube_config_file_path)
+        cmd = CMD_KUBE_CREATE if use_create else CMD_KUBE_APPLY
+        result = run_shell(cmd.format(namespace, temp_kube_config_file_path))
         print result
     except:
         print "Error while running kube file=" + temp_kube_config_file_path
@@ -116,15 +119,10 @@ def job(file_path, job_name, namespace, image_tag):
 
     try:
         pod_name = False
-        run_kube(file_path, env, temp_kube_config_file_path)
-        for _ in range(1, 5):
-            pod_name = run_shell(CMD_GET_JOB_POD_NAME.format(namespace, job_name))
-            if pod_name:
-                break
-            time.sleep(1)
 
-        if not pod_name:
-            raise Exception("Cannot find pod_name for job_name: " + job_name)
+        run_kube(file_path, env, temp_kube_config_file_path, use_create=True)
+        pod_name = run_shell(CMD_GET_JOB_POD_NAME.format(namespace, job_name))
+
         print "running job: " + job_name + " pod_name: " + pod_name
 
         phase = run_shell(CMD_POD_PHASE.format(namespace, pod_name))
@@ -137,6 +135,8 @@ def job(file_path, job_name, namespace, image_tag):
         while True:
             time.sleep(1)
             phase = run_shell(CMD_POD_PHASE.format(namespace, pod_name))
+            if phase == "":
+                continue
             if phase == "Succeeded":
                 break
             if phase == "Running":
