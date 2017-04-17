@@ -93,9 +93,11 @@ def safe_print_pod_log_or_status(pod_name, namespace):
 def safe_delete_job(job_name, namespace):
     try:
         print "cleaning up job: " + job_name
-        run_shell(CMD_DELETE_JOB.format(namespace, job_name))
-    except:
-        pass
+        # run_shell(CMD_DELETE_JOB.format(namespace, job_name))
+    except Exception as e:
+        print("Failed to cleanup job: '" + job_name + "'." +
+                "You should run `kubectl -n " + namespace + " delete job " + job_name + "` manually.")
+        print e
 
 def job(file_path, job_name, namespace, image_tag):
     '''
@@ -134,6 +136,7 @@ def job(file_path, job_name, namespace, image_tag):
             if phase == "Running":
                 continue
 
+            print "Phase type:" + type(phase)
             raise Exception("Running job failed with status: " + phase)
     finally:
         safe_print_pod_log_or_status(pod_name, namespace)
