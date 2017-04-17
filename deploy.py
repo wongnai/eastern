@@ -120,8 +120,10 @@ def job(file_path, job_name, namespace, image_tag):
     try:
         pod_name = False
 
-        run_kube(file_path, env, temp_kube_config_file_path, use_create=True)
+        run_kube(file_path, env, temp_kube_config_file_path)
         pod_name = run_shell(CMD_GET_JOB_POD_NAME.format(namespace, job_name))
+        if not pod_name:
+            raise Exception("Cannot find pod form job name: {}. Please ensure job is not exist.".format(job_name))
 
         print "running job: " + job_name + " pod_name: " + pod_name
 
