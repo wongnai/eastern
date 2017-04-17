@@ -77,6 +77,26 @@ def deploy(namespace, project, image_tag):
 
     run_kube(file_path, env, temp_kube_config_file_path)
 
+def safe_print_pod_log_or_status(pod_name, namespace):
+    if not pod_name:
+        return
+
+    try:
+        print run_shell(CMD_POD_OUTPUT.format(namespace, pod_name))
+    except subprocess.CalledProcessError:
+        try:
+            print "Cannot get log from pod_name=" + pod_name + ", will get raw pod instead"
+            print run_shell(CMD_POD_RAW.format(namespace, pod_name))
+        except subprocess.CalledProcessError:
+            pass
+
+def safe_delete_job(job_name, namespace):
+    try:
+        print "cleaning up job: " + job_name
+        run_shell(CMD_DELETE_JOB.format(namespace, job_name))
+    except:
+        pass
+
 def job(file_path, job_name, namespace, image_tag):
     '''
     run kube job
@@ -92,6 +112,7 @@ def job(file_path, job_name, namespace, image_tag):
     temp_kube_config_file_path = os.sep.join(["temp", temp_file_name])
 
     try:
+        pod_name = False
         run_kube(file_path, env, temp_kube_config_file_path)
         pod_name = run_shell(CMD_GET_JOB_POD_NAME.format(namespace, job_name))
 
@@ -114,17 +135,8 @@ def job(file_path, job_name, namespace, image_tag):
 
             raise Exception("Running job failed with status: " + phase)
     finally:
-        try:
-            print run_shell(CMD_POD_OUTPUT.format(namespace, pod_name))
-        except subprocess.CalledProcessError:
-            try:
-                print "Cannot get log from pod_name=" + pod_name + ", will get raw pod instead"
-                print run_shell(CMD_POD_RAW.format(namespace, pod_name))
-            except subprocess.CalledProcessError:
-                pass
-        print "cleaning up job: " + job_name
-        result = run_shell(CMD_DELETE_JOB.format(namespace, job_name))
-        print result
+        safe_print_pod_log_or_status(pod_name, namespace)
+        safe_delete_job(job_name, namespace)
 
 if __name__ == "__main__":
     if len(sys.argv) < 5 or sys.argv[1] not in EXISTING_COMMAND:
