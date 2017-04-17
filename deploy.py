@@ -32,6 +32,12 @@ def run_shell(cmd, debug=False):
         print "Run command: " + cmd
     return subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
 
+def run_shell_ignore(cmd, debug=False):
+    try:
+        print run_shell(cmd, debug)
+    except subprocess.CalledProcessError as err:
+        print err.output
+
 def run_kube(file_path, env, temp_kube_config_file_path, use_create=False):
     '''
     run kube with given file path
@@ -138,7 +144,7 @@ def job(file_path, job_name, namespace, image_tag):
             time.sleep(1)
             phase = run_shell(CMD_POD_PHASE.format(namespace, pod_name))
             if phase == "":
-                continue
+                break
             if phase == "Succeeded":
                 break
             if phase == "Running":
