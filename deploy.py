@@ -117,8 +117,14 @@ def job(file_path, job_name, namespace, image_tag):
     try:
         pod_name = False
         run_kube(file_path, env, temp_kube_config_file_path)
-        pod_name = run_shell(CMD_GET_JOB_POD_NAME.format(namespace, job_name))
+        for _ in range(1, 5):
+            pod_name = run_shell(CMD_GET_JOB_POD_NAME.format(namespace, job_name))
+            if pod_name:
+                break
+            time.sleep(1)
 
+        if not pod_name:
+            raise Exception("Cannot find pod_name for job_name: " + job_name)
         print "running job: " + job_name + " pod_name: " + pod_name
 
         phase = run_shell(CMD_POD_PHASE.format(namespace, pod_name))
