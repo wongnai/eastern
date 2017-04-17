@@ -70,7 +70,7 @@ def run_kube(file_path, env, temp_kube_config_file_path, use_create=False):
         # remove temp file
         os.remove(temp_kube_config_file_path)
 
-def deploy(namespace, project, image_tag):
+def deploy(project, namespace, image_tag):
     '''
     run deploy kubernetes.yaml
     '''
