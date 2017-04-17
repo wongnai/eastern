@@ -136,10 +136,11 @@ def job(file_path, job_name, namespace, image_tag):
             if phase == "Running":
                 continue
 
-            print "Phase type:" + type(phase)
+            print "Phase type:" + str(type(phase)) + " => `" + str(phase) + "`"
             raise Exception("Running job failed with status: " + phase)
     finally:
-        safe_print_pod_log_or_status(pod_name, namespace)
+        if "pod_name" in locals():
+            safe_print_pod_log_or_status(pod_name, namespace)
         safe_delete_job(job_name, namespace)
 
 if __name__ == "__main__":
