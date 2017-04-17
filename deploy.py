@@ -107,7 +107,8 @@ def job(file_path, job_name, namespace, image_tag):
         "IMAGE_TAG": image_tag,
         "JOB_NAME": job_name
     }
-    file_path = os.sep.join(["projects", file_path])
+    if not os.path.isabs(file_path):
+        file_path = os.sep.join(["projects", file_path])
     temp_file_name = "{}_{}_{}.yaml".format(job_name, namespace, str(int(time.time())))
     temp_kube_config_file_path = os.sep.join(["temp", temp_file_name])
 
