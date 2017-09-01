@@ -6,7 +6,7 @@ import fileformatter
 import time
 import traceback
 
-EXISTING_COMMAND = ["project", "job"]
+EXISTING_COMMAND = ["project", "job", "generate"]
 
 CMD_GET_JOB_POD_NAME = "kubectl -n {} get pod --selector=job-name={} --output=jsonpath={{.items..metadata.name}}"
 CMD_POD_PHASE = "kubectl -n {} get pod {} -o jsonpath={{.status.phase}}"
@@ -86,6 +86,20 @@ def deploy(project, namespace, image_tag):
 
     run_kube(file_path, env, temp_kube_config_file_path)
 
+def generate(project, namespace, image_tag):
+    '''
+    generate kubernetes.yaml deployment
+    '''
+    # format file
+    env = {
+        "NAMESPACE": namespace,
+        "IMAGE_TAG": image_tag
+    }
+    file_path = os.sep.join(["projects", project, "kubernetes.yaml"])
+
+    kube_config_file = fileformatter.format(file_path, env)
+    print kube_config_file
+
 def safe_print_pod_log_or_status(pod_name, namespace):
     if not pod_name:
         return
@@ -161,13 +175,16 @@ if __name__ == "__main__":
     if len(sys.argv) < 5 or sys.argv[1] not in EXISTING_COMMAND:
         print """Invalid parameters provided
         Usage:
+            ./deploy.py generate [project-name] [namespace] [image-tag]
             ./deploy.py project [project-name] [namespace] [image-tag]
             ./deploy.py job [job-file-path] [job-name] [namespace] [image-tag]
         """
         exit(1)
 
     try:
-        if sys.argv[1] == "project":
+        if sys.argv[1] == "generate":
+            generate(sys.argv[2], sys.argv[3], sys.argv[4])
+        elif sys.argv[1] == "project":
             deploy(sys.argv[2], sys.argv[3], sys.argv[4])
         elif sys.argv[1] == "job":
             job(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
