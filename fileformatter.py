@@ -62,6 +62,27 @@ def map_override(line, path, env):
     # insert into file array
     return override_file_lines
 
+prod_mark_file_name = os.path.join(os.path.dirname(__file__), 'projects', 'production.yaml')
+def map_prod_mark(line, path, env):
+    if 'prod' not in env['NAMESPACE']:
+        return line.replace('# mark_prod', ' # mark_prod ignored as this is not production')
+
+    pos = line.find('# mark_prod')
+    if pos == -1:
+        return line
+
+    indent = ' ' * pos
+    override_text = format(prod_mark_file_name, env)
+
+    override_file_lines = [indent + l for l in override_text.split(os.linesep)]
+    return override_file_lines
+
+def line_map(line, path, env):
+    out = map_override(line, path, env)
+    out = map_prod_mark(line, path, env)
+
+    return out
+
 def replace_with_env(file_text, env):
     for key in env:
         file_text = file_text.replace("${" + key + "}", env[key])
@@ -71,6 +92,6 @@ def format(filename, env = {}):
     file_text = replace_with_env(Path(filename).read_text(), env)
     dir_path = os.path.dirname(os.path.realpath(filename))
     file_text_array = file_text.split(os.linesep)
-    new_file_text_array = flatten(map(lambda line : map_override(line, dir_path, env), file_text_array))
+    new_file_text_array = flatten(map(lambda line : line_map(line, dir_path, env), file_text_array))
 
     return os.linesep.join(new_file_text_array)
