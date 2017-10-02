@@ -63,9 +63,16 @@ def map_override(line, path, env):
     return override_file_lines
 
 prod_mark_file_name = os.path.join(os.path.dirname(__file__), 'projects', 'production.yaml')
+prod_ns = ('prod', 'staging')
 def map_prod_mark(line, path, env):
-    if 'prod' not in env['NAMESPACE']:
-        return line.replace('# mark_prod', ' # mark_prod ignored as this is not production')
+    is_prod = False
+    for ns in prod_ns:
+        if ns in env['NAMESPACE']:
+            is_prod = True
+            break
+
+    if not is_prod:
+        return line.replace('# mark_prod', '# mark_prod ignored as this is not production')
 
     pos = line.find('# mark_prod')
     if pos == -1:
