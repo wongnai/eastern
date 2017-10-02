@@ -65,9 +65,12 @@ def map_override(line, path, env):
 prod_mark_file_name = os.path.join(os.path.dirname(__file__), 'projects', 'production.yaml')
 prod_ns = ('prod', 'staging')
 def map_prod_mark(line, path, env):
+    if type(line) == list:
+        line = '\n'.join(line)
+
     is_prod = False
     for ns in prod_ns:
-        if ns in env['NAMESPACE']:
+        if 'NAMESPACE' in env and ns in env['NAMESPACE']:
             is_prod = True
             break
 
@@ -86,7 +89,7 @@ def map_prod_mark(line, path, env):
 
 def line_map(line, path, env):
     out = map_override(line, path, env)
-    out = map_prod_mark(line, path, env)
+    out = map_prod_mark(out, path, env)
 
     return out
 
