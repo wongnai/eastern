@@ -67,13 +67,13 @@ prod_ns = ('prod', 'staging')
 prod_not_supported_ns = ('production', 'staging')
 def map_prod_mark(line, path, env):
     if 'NAMESPACE' not in env:
-        return line
+        return line.replace('# mark_prod', '# mark_prod ignored as NAMESPACE is not found')
 
     if type(line) == list:
         line = '\n'.join(line)
 
     if env['NAMESPACE'] in prod_not_supported_ns:
-        return line
+        return line.replace('# mark_prod', '# mark_prod ignored as this namespace is explicitly blacklisted')
 
     is_prod = False
     for ns in prod_ns:
