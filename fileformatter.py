@@ -64,13 +64,20 @@ def map_override(line, path, env):
 
 prod_mark_file_name = os.path.join(os.path.dirname(__file__), 'projects', 'production.yaml')
 prod_ns = ('prod', 'staging')
+prod_not_supported_ns = ('production', 'staging')
 def map_prod_mark(line, path, env):
+    if 'NAMESPACE' not in env:
+        return line
+
     if type(line) == list:
         line = '\n'.join(line)
 
+    if env['NAMESPACE'] in prod_not_supported_ns:
+        return line
+
     is_prod = False
     for ns in prod_ns:
-        if 'NAMESPACE' in env and ns in env['NAMESPACE']:
+        if ns in env['NAMESPACE']:
             is_prod = True
             break
 
