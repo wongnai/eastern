@@ -60,7 +60,7 @@ def is_gke():
 
 def create_kube_ns(ns):
     create_call = subprocess.Popen(
-        "kubectl create namespace " + namespace,
+        "kubectl create namespace " + ns,
         shell=True,
         stderr=subprocess.STDOUT,
         stdout=subprocess.PIPE
