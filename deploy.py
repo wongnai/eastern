@@ -66,7 +66,7 @@ def create_kube_ns(ns):
         stdout=subprocess.PIPE
     )
     create_call.communicate()
-    if 'AlreadyExists' in create_call.read():
+    if 'AlreadyExists' in create_call.stdout.read():
         return
 
     # At this point a new namespace was created, deploy namespace fixtures
