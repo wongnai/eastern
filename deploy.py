@@ -65,7 +65,7 @@ def create_kube_ns(ns):
         stderr=subprocess.STDOUT,
         stdout=subprocess.PIPE
     )
-    create_call.communicate(timeout=10)
+    create_call.communicate()
     if 'AlreadyExists' in create_call.read():
         return
 
