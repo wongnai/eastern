@@ -161,6 +161,7 @@ def job(file_path, job_name, namespace, image_tag):
     run kube job
     '''
     # format file
+    job_name = job_name[:63] # job name must be under 63 chars
     env = {
         "NAMESPACE": namespace,
         "IMAGE_TAG": image_tag,
