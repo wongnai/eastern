@@ -39,24 +39,24 @@ def run_shell_ignore(cmd, debug=False):
     except subprocess.CalledProcessError as err:
         print err.output
 
-_is_gke = None
-def is_gke():
-    '''Detect whether we're running in GKE'''
-    global _is_gke
-    if _is_gke is not None:
-        return _is_gke
+_is_aws = None
+def is_aws():
+    '''Detect whether we're running in AWS'''
+    global _is_aws
+    if _is_aws is not None:
+        return _is_aws
 
     # both aws and goog have this ip
     try:
         metadata = urllib2.urlopen('http://169.254.169.254/', timeout=1)
         metadata_header = metadata.info()
-        _is_gke = 'metadata-flavor' in metadata_header and metadata_header['metadata-flavor'] == 'Google'
-        print('is_gke: We\'re in GCP' if _is_gke else 'is_gke: We are in AWS-like')
-        return _is_gke
+        _is_aws = 'server' in metadata_header and metadata_header['server'] == 'EC2ws'
+        print('is_aws: We\'re in AWS' if _is_aws else 'is_aws: We are in AWS-like')
+        return _is_aws
     except urllib2.URLError:
-        print('is_gke: Cannot connect to metadata service, assuming not cloud')
-        _is_gke = False
-        return _is_gke
+        print('is_aws: Cannot connect to metadata service, assuming not cloud')
+        _is_aws = False
+        return _is_aws
 
 def create_kube_ns(ns):
     create_call = subprocess.Popen(
@@ -69,7 +69,7 @@ def create_kube_ns(ns):
         return
 
     # At this point a new namespace was created, deploy namespace fixtures
-    if is_gke():
+    if not is_aws():
         run_shell(os.path.join(os.path.dirname(__file__), 'scripts', 'namespace-fixture.sh')+ ' ' + ns)
 
 def run_kube(file_path, env, temp_kube_config_file_path, use_create=False):
