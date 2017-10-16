@@ -1,10 +1,10 @@
-from pathlib2 import Path
+from pathlib import Path
 import os
 import collections
 
 def flatten(l):
     for el in l:
-        if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
+        if isinstance(el, collections.Iterable) and not isinstance(el, str):
             for sub in flatten(el):
                 yield sub
         else:
@@ -18,11 +18,11 @@ def resolve_load_file(path, override_file_path):
         default_override_file = argv[1].strip()
 
     # do nothing when no override file found
-    override_file = Path(path + os.sep + override_file_path)
+    override_file = Path(path) / override_file_path
     if not override_file.exists():
         if not default_override_file:
             return False
-        override_file = Path(path + os.sep + default_override_file)
+        override_file = Path(path) / default_override_file
         if not override_file.exists():
             return False
 
@@ -96,7 +96,7 @@ def map_prod_mark(line, path, env):
 
 def line_map(line, path, env):
     out = map_override(line, path, env)
-    out = map_prod_mark(out, path, env)
+    # out = map_prod_mark(out, path, env)
 
     return out
 
@@ -109,6 +109,6 @@ def format(filename, env = {}):
     file_text = replace_with_env(Path(filename).read_text(), env)
     dir_path = os.path.dirname(os.path.realpath(filename))
     file_text_array = file_text.split(os.linesep)
-    new_file_text_array = flatten(map(lambda line : line_map(line, dir_path, env), file_text_array))
+    new_file_text_array = flatten([line_map(line, dir_path, env) for line in file_text_array])
 
     return os.linesep.join(new_file_text_array)

@@ -1,11 +1,10 @@
-#!/usr/bin/env python2.7
 import sys
 import os
 import subprocess
 import fileformatter
 import time
 import traceback
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 EXISTING_COMMAND = ["project", "job", "generate"]
 
@@ -30,14 +29,14 @@ def run_shell(cmd, debug=False):
     invoke shell command and return output as result, raise exception if non-zero exit
     '''
     if debug:
-        print "Run command: " + cmd
+        print("Run command: " + cmd)
     return subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
 
 def run_shell_ignore(cmd, debug=False):
     try:
-        print run_shell(cmd, debug)
+        print(run_shell(cmd, debug))
     except subprocess.CalledProcessError as err:
-        print err.output
+        print(err.output)
 
 _is_aws = None
 def is_aws():
@@ -48,12 +47,12 @@ def is_aws():
 
     # both aws and goog have this ip
     try:
-        metadata = urllib2.urlopen('http://169.254.169.254/', timeout=1)
+        metadata = urllib.request.urlopen('http://169.254.169.254/', timeout=1)
         metadata_header = metadata.info()
         _is_aws = 'server' in metadata_header and metadata_header['server'] == 'EC2ws'
-        print('is_aws: We\'re in AWS' if _is_aws else 'is_aws: We are in AWS-like')
+        print(('is_aws: We\'re in AWS' if _is_aws else 'is_aws: We are in AWS-like'))
         return _is_aws
-    except urllib2.URLError:
+    except urllib.error.URLError:
         print('is_aws: Cannot connect to metadata service, assuming not cloud')
         _is_aws = False
         return _is_aws
@@ -77,13 +76,13 @@ def run_kube(file_path, env, temp_kube_config_file_path, use_create=False):
     run kube with given file path
     '''
     kube_config_file = fileformatter.format(file_path, env)
-    print kube_config_file
+    print(kube_config_file)
 
     # write into temp
     if not os.path.exists("temp"):
         os.makedirs("temp")
 
-    print temp_kube_config_file_path
+    print(temp_kube_config_file_path)
     write_file(temp_kube_config_file_path, kube_config_file)
 
     namespace = env['NAMESPACE']
@@ -93,12 +92,12 @@ def run_kube(file_path, env, temp_kube_config_file_path, use_create=False):
 
     try:
         # apply file to kube
-        print "applying kube config"
+        print("applying kube config")
         cmd = CMD_KUBE_CREATE if use_create else CMD_KUBE_APPLY
         result = run_shell(cmd.format(namespace, temp_kube_config_file_path))
-        print result
+        print(result)
     except:
-        print "Error while running kube file=" + temp_kube_config_file_path
+        print("Error while running kube file=" + temp_kube_config_file_path)
         raise
     finally:
         # remove temp file
@@ -132,29 +131,29 @@ def generate(project, namespace, image_tag):
     file_path = os.sep.join(["projects", project, "kubernetes.yaml"])
 
     kube_config_file = fileformatter.format(file_path, env)
-    print kube_config_file
+    print(kube_config_file)
 
 def safe_print_pod_log_or_status(pod_name, namespace):
     if not pod_name:
         return
 
     try:
-        print run_shell(CMD_POD_OUTPUT.format(namespace, pod_name))
+        print(run_shell(CMD_POD_OUTPUT.format(namespace, pod_name)))
     except subprocess.CalledProcessError:
         try:
-            print "Cannot get log from pod_name=" + pod_name + ", will get raw pod instead"
-            print run_shell(CMD_POD_RAW.format(namespace, pod_name))
+            print("Cannot get log from pod_name=" + pod_name + ", will get raw pod instead")
+            print(run_shell(CMD_POD_RAW.format(namespace, pod_name)))
         except subprocess.CalledProcessError:
             pass
 
 def safe_delete_job(job_name, namespace):
     try:
-        print "cleaning up job: " + job_name
+        print("cleaning up job: " + job_name)
         run_shell(CMD_DELETE_JOB.format(namespace, job_name))
     except Exception as e:
-        print("Failed to cleanup job: '" + job_name + "'." +
-                "You should run `kubectl -n " + namespace + " delete job " + job_name + "` manually.")
-        print e
+        print(("Failed to cleanup job: '" + job_name + "'." +
+                "You should run `kubectl -n " + namespace + " delete job " + job_name + "` manually."))
+        print(e)
 
 def job(file_path, job_name, namespace, image_tag):
     '''
@@ -180,7 +179,7 @@ def job(file_path, job_name, namespace, image_tag):
         if not pod_name:
             raise Exception("Cannot find pod form job name: {}. Please ensure job is not exist.".format(job_name))
 
-        print "running job: " + job_name + " pod_name: " + pod_name
+        print("running job: " + job_name + " pod_name: " + pod_name)
 
         phase = run_shell(CMD_POD_PHASE.format(namespace, pod_name))
         for _ in range(1, 100):
@@ -199,7 +198,7 @@ def job(file_path, job_name, namespace, image_tag):
             if phase == "Running":
                 continue
 
-            print "Phase type:" + str(type(phase)) + " => `" + str(phase) + "`"
+            print("Phase type:" + str(type(phase)) + " => `" + str(phase) + "`")
             raise Exception("Running job failed with status: " + phase)
     finally:
         if "pod_name" in locals():
@@ -208,12 +207,12 @@ def job(file_path, job_name, namespace, image_tag):
 
 if __name__ == "__main__":
     if len(sys.argv) < 5 or sys.argv[1] not in EXISTING_COMMAND:
-        print """Invalid parameters provided
+        print("""Invalid parameters provided
         Usage:
             ./deploy.py generate [project-name] [namespace] [image-tag]
             ./deploy.py project [project-name] [namespace] [image-tag]
             ./deploy.py job [job-file-path] [job-name] [namespace] [image-tag]
-        """
+        """)
         exit(1)
 
     try:
@@ -224,10 +223,10 @@ if __name__ == "__main__":
         elif sys.argv[1] == "job":
             job(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
         else:
-            print """Deploy error: invalid command {}""".format(sys.argv[1])
+            print("""Deploy error: invalid command {}""".format(sys.argv[1]))
             raise Exception("invalid command")
     except subprocess.CalledProcessError as err:
-        print err
-        print err.output
+        print(err)
+        print(err.output)
         traceback.print_exc()
         exit(err.returncode)
