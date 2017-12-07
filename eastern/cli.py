@@ -17,10 +17,9 @@ def print_error(message):
     click.echo(click.style(message, fg='red', bold=True), err=True)
 
 
-def format_yaml(file, namespace, tag, edit=False, print=True, extra=[]):
+def format_yaml(file, namespace, edit=False, print=True, extra=[]):
     env = {
         'NAMESPACE': namespace,
-        'IMAGE_TAG': tag,
     }
     env.update(**dict(extra))
 
@@ -84,22 +83,20 @@ def parse_set(ctx, param, value):
 
 @cli.command()
 @click.argument('file', type=click.Path(exists=True))
-@click.argument('namespace')
-@click.argument('tag')
+@click.argument('namespace', default='default')
 @click.option(
     '--set',
     '-s',
     callback=parse_set,
     multiple=True,
     help='Additional variables to set')
-def generate(file, namespace, tag, **kwargs):
-    format_yaml(file, namespace, tag, extra=kwargs['set'])
+def generate(file, namespace, **kwargs):
+    format_yaml(file, namespace, extra=kwargs['set'])
 
 
 @cli.command()
 @click.argument('file', type=click.Path(exists=True))
-@click.argument('namespace')
-@click.argument('tag')
+@click.argument('namespace', default='default')
 @click.option(
     '--set',
     '-s',
@@ -114,9 +111,8 @@ def generate(file, namespace, tag, **kwargs):
 @click.option(
     '--wait/--no-wait', default=True, help='Wait for deployment to finish')
 @click.pass_context
-def deploy(ctx, file, namespace, tag, edit, wait, **kwargs):
-    manifest = format_yaml(
-        file, namespace, tag, edit=edit, extra=kwargs['set'])
+def deploy(ctx, file, namespace, edit, wait, **kwargs):
+    manifest = format_yaml(file, namespace, edit=edit, extra=kwargs['set'])
     result = deploy_from_manifest(ctx, namespace, manifest)
 
     if not wait or result != 0:
@@ -127,7 +123,7 @@ def deploy(ctx, file, namespace, tag, edit, wait, **kwargs):
 
 @cli.command()
 @click.argument('file', type=click.Path(exists=True))
-@click.argument('namespace')
+@click.argument('namespace', default='default')
 @click.argument('tag')
 @click.option('--set', '-s', callback=parse_set, multiple=True)
 @click.option(
@@ -137,8 +133,8 @@ def deploy(ctx, file, namespace, tag, edit, wait, **kwargs):
     help='Edit generated manifest before deploying')
 @click.pass_context
 def job(ctx, file, namespace, tag, edit, **kwargs):
-    manifest = format_yaml(
-        file, namespace, tag, edit=edit, extra=kwargs['set'])
+    kwargs['set'].append(('IMAGE_TAG', tag))
+    manifest = format_yaml(file, namespace, edit=edit, extra=kwargs['set'])
 
     # Modify the name to contain imageTag
     manifest = list(yaml.load_all(manifest))
