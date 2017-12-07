@@ -1,8 +1,7 @@
 import yaml
-import struct
-from pathlib2 import Path
 
-class RollingResources(struct.Struct):
+
+class RollingResources:
     def __init__(self, yml):
         self.yml = yml
 
@@ -16,18 +15,18 @@ class RollingResources(struct.Struct):
             return self.yml['metadata']['namespace']
         return None
 
-def __is_rolling_resource(doc):
+
+def is_rolling_resource(doc):
     if 'kind' not in doc:
         return False
 
-    return doc['kind'] in ['Deployment', 'ReplicationController', 'ReplicaSet']
+    return doc['kind'] in ['Deployment', 'ReplicaSet', 'DaemonSet']
 
-def get_supported_rolling_resources(yaml_path):
-    text = Path(yaml_path).read_text()
-    # print text
+
+def get_supported_rolling_resources(text):
     yml = yaml.load_all(text)
     results = []
     for doc in yml:
-        if __is_rolling_resource(doc):
+        if is_rolling_resource(doc):
             results.append(RollingResources(doc))
     return results
