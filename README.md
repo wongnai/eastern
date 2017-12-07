@@ -33,8 +33,8 @@ Note that Eastern requires `kubectl`.
 ### Template language 
 At its core, Eastern is a YAML templating tool. Eastern provides the following commands as YAML comment.
 
-- `load? file_1.yaml file_2.yaml ...`: Load the first file available
-- `load! file_1.yaml file_2.yaml ...`: Same as `load?` but throw when no file is loaded.
+- `load? file_1.yaml, file_2.yaml ...`: Load the first file available
+- `load! file_1.yaml, file_2.yaml ...`: Same as `load?` but throw when no file is loaded.
 
 The file name and contents may contains variable interpolation. Available variables are
 
@@ -48,7 +48,7 @@ For example:
 ```yaml
 image: wongnai/eastern:${IMAGE_TAG}
 env:
-  # load! env-${NAMESPACE}.yaml env.yaml
+  # load! env-${NAMESPACE}.yaml, env.yaml
 ```
 
 See full deployment example in the [example](example/) folder.

@@ -1,6 +1,6 @@
 # load! overrides/service.yaml
 ---
-# load! overrides/ingress-${NAMESPACE}.yaml overrides/ingress.yaml
+# load! overrides/ingress-${NAMESPACE}.yaml, overrides/ingress.yaml
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
@@ -21,4 +21,4 @@ spec:
             memory: "64Mi"
             cpu: "1m"
         env:
-        # load! overrides/env.yaml
+        # load! overrides/env-${NAMESPACE}.yaml, overrides/env.yaml
