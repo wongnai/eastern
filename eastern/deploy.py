@@ -1,10 +1,11 @@
 import sys
 import os
 import subprocess
-import fileformatter
 import time
 import traceback
 import urllib.request, urllib.error, urllib.parse
+
+from . import fileformatter
 
 EXISTING_COMMAND = ["project", "job", "generate"]
 
