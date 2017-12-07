@@ -1,0 +1,24 @@
+# load! overrides/service.yaml
+---
+# load! overrides/ingress-${NAMESPACE}.yaml overrides/ingress.yaml
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: sentry
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sentry
+    spec:
+      containers:
+      - name: sentry
+        image: sentry:${IMAGE_TAG}
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "1m"
+        env:
+        # load! overrides/env.yaml
