@@ -1,3 +1,4 @@
+import json
 import subprocess
 
 
@@ -30,7 +31,7 @@ class Kubectl:
 
         process.communicate(data)
 
-        return process
+        return process.returncode
 
     def rollout_wait(self, name):
         return subprocess.call(self.get_launch_args() + [
@@ -38,3 +39,42 @@ class Kubectl:
             'status',
             name,
         ])
+
+    def get_job_pod_name(self, name):
+        out = subprocess.check_output(self.get_launch_args() + [
+            'get', 'pod', '-a', '--selector=job-name={}'.format(name), '-o',
+            'jsonpath={.items..metadata.name}'
+        ])
+
+        if not out.strip():
+            raise JobNotFound
+
+        return out.decode('utf8')
+
+    def get_pod_phase(self, name):
+        return subprocess.check_output(self.get_launch_args(
+        ) + ['get', 'pod', name, '-o', 'jsonpath={.status.phase}']).decode(
+            'utf8')
+
+    def get_pod_log(self, name):
+        return subprocess.check_output(self.get_launch_args() + ['logs', name])
+
+    def get_pod(self, name):
+        return json.loads(
+            subprocess.check_output(
+                self.get_launch_args() + ['get', 'pod', name, '-o', 'json']))
+
+    def delete_job(self, name):
+        return subprocess.call(self.get_launch_args() + [
+            'delete',
+            'job',
+            name,
+        ])
+
+
+class KubernetesException(Exception):
+    pass
+
+
+class JobNotFound(KubernetesException):
+    pass

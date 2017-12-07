@@ -6,6 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'Click==6.7',
+        'PyYAML==3.12',
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
