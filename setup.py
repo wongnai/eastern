@@ -7,9 +7,7 @@ setup(
     install_requires=[
         'Click==6.7',
     ],
+    test_suite='eastern',
     entry_points={
-        'console_scripts': [
-            'eastern = eastern.cli:cli'
-        ]
-    }
-)
+        'console_scripts': ['eastern = eastern.cli:cli']
+    })

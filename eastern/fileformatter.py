@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 import collections
 
+
 def flatten(l):
     for el in l:
         if isinstance(el, collections.Iterable) and not isinstance(el, str):
@@ -9,6 +10,7 @@ def flatten(l):
                 yield sub
         else:
             yield el
+
 
 def resolve_load_file(path, override_file_path):
     default_override_file = False
@@ -27,6 +29,7 @@ def resolve_load_file(path, override_file_path):
             return False
 
     return override_file
+
 
 def map_override(line, path, env):
     require_sep = "# load!"
@@ -62,18 +65,25 @@ def map_override(line, path, env):
     # insert into file array
     return override_file_lines
 
-prod_mark_file_name = os.path.join(os.path.dirname(__file__), 'projects', 'production.yaml')
+
+prod_mark_file_name = os.path.join(
+    os.path.dirname(__file__), 'projects', 'production.yaml')
 prod_ns = ('prod', 'staging')
 prod_not_supported_ns = ('production', 'staging')
+
+
 def map_prod_mark(line, path, env):
     if 'NAMESPACE' not in env:
-        return line.replace('# mark_prod', '# mark_prod ignored as NAMESPACE is not found')
+        return line.replace('# mark_prod',
+                            '# mark_prod ignored as NAMESPACE is not found')
 
     if type(line) == list:
         line = '\n'.join(line)
 
     if env['NAMESPACE'] in prod_not_supported_ns:
-        return line.replace('# mark_prod', '# mark_prod ignored as this namespace is explicitly blacklisted')
+        return line.replace(
+            '# mark_prod',
+            '# mark_prod ignored as this namespace is explicitly blacklisted')
 
     is_prod = False
     for ns in prod_ns:
@@ -82,7 +92,8 @@ def map_prod_mark(line, path, env):
             break
 
     if not is_prod:
-        return line.replace('# mark_prod', '# mark_prod ignored as this is not production')
+        return line.replace('# mark_prod',
+                            '# mark_prod ignored as this is not production')
 
     pos = line.find('# mark_prod')
     if pos == -1:
@@ -94,21 +105,25 @@ def map_prod_mark(line, path, env):
     override_file_lines = [indent + l for l in override_text.split(os.linesep)]
     return override_file_lines
 
+
 def line_map(line, path, env):
     out = map_override(line, path, env)
     # out = map_prod_mark(out, path, env)
 
     return out
 
+
 def replace_with_env(file_text, env):
     for key in env:
         file_text = file_text.replace("${" + key + "}", env[key])
     return file_text
 
-def format(filename, env = {}):
+
+def format(filename, env={}):
     file_text = replace_with_env(Path(filename).read_text(), env)
     dir_path = os.path.dirname(os.path.realpath(filename))
     file_text_array = file_text.split(os.linesep)
-    new_file_text_array = flatten([line_map(line, dir_path, env) for line in file_text_array])
+    new_file_text_array = flatten(
+        [line_map(line, dir_path, env) for line in file_text_array])
 
     return os.linesep.join(new_file_text_array)

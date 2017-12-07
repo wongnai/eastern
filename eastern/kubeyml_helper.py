@@ -2,6 +2,7 @@ import yaml
 
 
 class RollingResources:
+
     def __init__(self, yml):
         self.yml = yml
 

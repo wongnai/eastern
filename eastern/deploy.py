@@ -17,6 +17,7 @@ CMD_DELETE_JOB = "kubectl -n {} delete job {}"
 CMD_KUBE_CREATE = "kubectl -n {} create -f {}"
 CMD_KUBE_APPLY = "kubectl -n {} apply -f {}"
 
+
 def write_file(file_path, data):
     '''
     write data to file
@@ -24,6 +25,7 @@ def write_file(file_path, data):
     filep = open(file_path, "w+")
     filep.write(data)
     filep.close()
+
 
 def run_shell(cmd, debug=False):
     '''
@@ -33,13 +35,17 @@ def run_shell(cmd, debug=False):
         print("Run command: " + cmd)
     return subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
 
+
 def run_shell_ignore(cmd, debug=False):
     try:
         print(run_shell(cmd, debug))
     except subprocess.CalledProcessError as err:
         print(err.output)
 
+
 _is_aws = None
+
+
 def is_aws():
     '''Detect whether we're running in AWS'''
     global _is_aws
@@ -51,26 +57,31 @@ def is_aws():
         metadata = urllib.request.urlopen('http://169.254.169.254/', timeout=1)
         metadata_header = metadata.info()
         _is_aws = 'server' in metadata_header and metadata_header['server'] == 'EC2ws'
-        print(('is_aws: We\'re in AWS' if _is_aws else 'is_aws: We are in AWS-like'))
+        print(('is_aws: We\'re in AWS'
+               if _is_aws else 'is_aws: We are in AWS-like'))
         return _is_aws
     except urllib.error.URLError:
         print('is_aws: Cannot connect to metadata service, assuming not cloud')
         _is_aws = False
         return _is_aws
 
+
 def create_kube_ns(ns):
     create_call = subprocess.Popen(
         "kubectl create namespace " + ns,
         shell=True,
         stderr=subprocess.STDOUT,
-        stdout=subprocess.PIPE
-    )
+        stdout=subprocess.PIPE)
     if 'AlreadyExists' in create_call.stdout.read():
         return
 
     # At this point a new namespace was created, deploy namespace fixtures
     if not is_aws():
-        run_shell(os.path.join(os.path.dirname(__file__), 'scripts', 'namespace-fixture.sh')+ ' ' + ns)
+        run_shell(
+            os.path.join(
+                os.path.dirname(__file__), 'scripts', 'namespace-fixture.sh') +
+            ' ' + ns)
+
 
 def run_kube(file_path, env, temp_kube_config_file_path, use_create=False):
     '''
@@ -104,35 +115,33 @@ def run_kube(file_path, env, temp_kube_config_file_path, use_create=False):
         # remove temp file
         os.remove(temp_kube_config_file_path)
 
+
 def deploy(project, namespace, image_tag):
     '''
     run deploy kubernetes.yaml
     '''
     # format file
-    env = {
-        "NAMESPACE": namespace,
-        "IMAGE_TAG": image_tag
-    }
+    env = {"NAMESPACE": namespace, "IMAGE_TAG": image_tag}
     file_path = os.sep.join(["projects", project, "kubernetes.yaml"])
 
-    temp_file_name = "{}_{}_{}.yaml".format(project, namespace, str(int(time.time())))
+    temp_file_name = "{}_{}_{}.yaml".format(project, namespace,
+                                            str(int(time.time())))
     temp_kube_config_file_path = os.sep.join(["temp", temp_file_name])
 
     run_kube(file_path, env, temp_kube_config_file_path)
+
 
 def generate(project, namespace, image_tag):
     '''
     generate kubernetes.yaml deployment
     '''
     # format file
-    env = {
-        "NAMESPACE": namespace,
-        "IMAGE_TAG": image_tag
-    }
+    env = {"NAMESPACE": namespace, "IMAGE_TAG": image_tag}
     file_path = os.sep.join(["projects", project, "kubernetes.yaml"])
 
     kube_config_file = fileformatter.format(file_path, env)
     print(kube_config_file)
+
 
 def safe_print_pod_log_or_status(pod_name, namespace):
     if not pod_name:
@@ -142,10 +151,12 @@ def safe_print_pod_log_or_status(pod_name, namespace):
         print(run_shell(CMD_POD_OUTPUT.format(namespace, pod_name)))
     except subprocess.CalledProcessError:
         try:
-            print("Cannot get log from pod_name=" + pod_name + ", will get raw pod instead")
+            print("Cannot get log from pod_name=" + pod_name +
+                  ", will get raw pod instead")
             print(run_shell(CMD_POD_RAW.format(namespace, pod_name)))
         except subprocess.CalledProcessError:
             pass
+
 
 def safe_delete_job(job_name, namespace):
     try:
@@ -153,23 +164,22 @@ def safe_delete_job(job_name, namespace):
         run_shell(CMD_DELETE_JOB.format(namespace, job_name))
     except Exception as e:
         print(("Failed to cleanup job: '" + job_name + "'." +
-                "You should run `kubectl -n " + namespace + " delete job " + job_name + "` manually."))
+               "You should run `kubectl -n " + namespace + " delete job " +
+               job_name + "` manually."))
         print(e)
+
 
 def job(file_path, job_name, namespace, image_tag):
     '''
     run kube job
     '''
     # format file
-    job_name = job_name[:63] # job name must be under 63 chars
-    env = {
-        "NAMESPACE": namespace,
-        "IMAGE_TAG": image_tag,
-        "JOB_NAME": job_name
-    }
+    job_name = job_name[:63]  # job name must be under 63 chars
+    env = {"NAMESPACE": namespace, "IMAGE_TAG": image_tag, "JOB_NAME": job_name}
     if not os.path.isabs(file_path):
         file_path = os.sep.join(["projects", file_path])
-    temp_file_name = "{}_{}_{}.yaml".format(job_name, namespace, str(int(time.time())))
+    temp_file_name = "{}_{}_{}.yaml".format(job_name, namespace,
+                                            str(int(time.time())))
     temp_kube_config_file_path = os.sep.join(["temp", temp_file_name])
 
     try:
@@ -178,7 +188,9 @@ def job(file_path, job_name, namespace, image_tag):
         run_kube(file_path, env, temp_kube_config_file_path)
         pod_name = run_shell(CMD_GET_JOB_POD_NAME.format(namespace, job_name))
         if not pod_name:
-            raise Exception("Cannot find pod form job name: {}. Please ensure job is not exist.".format(job_name))
+            raise Exception(
+                "Cannot find pod form job name: {}. Please ensure job is not exist.".
+                format(job_name))
 
         print("running job: " + job_name + " pod_name: " + pod_name)
 
@@ -205,6 +217,7 @@ def job(file_path, job_name, namespace, image_tag):
         if "pod_name" in locals():
             safe_print_pod_log_or_status(pod_name, namespace)
         safe_delete_job(job_name, namespace)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 5 or sys.argv[1] not in EXISTING_COMMAND:
