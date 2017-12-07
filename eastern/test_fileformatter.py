@@ -1,10 +1,10 @@
 import unittest
-import fileformatter
 from pathlib import Path
+
+from . import fileformatter
 
 
 class FileformatterTest(unittest.TestCase):
-
     def setUp(self):
         self.maxDiff = None
 

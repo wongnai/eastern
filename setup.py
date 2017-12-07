@@ -7,7 +7,8 @@ setup(
     install_requires=[
         'Click==6.7',
     ],
-    test_suite='eastern',
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': ['eastern = eastern.cli:cli']
     })
