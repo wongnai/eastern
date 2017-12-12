@@ -26,6 +26,8 @@ projects
    \ kubernetes.yaml
 ```
 
+In this example we will take a look at one of the folder in our monorepo.
+
 ## Understanding the files
 
 First we write the main deployment file, [sentry.yaml](sentry.yaml). Notice that the image tag is a placeholder `${IMAGE_TAG}` and the environment is loaded from `overrides/env-${NAMESPACE}.yaml` or `overrides/env.yaml`.
