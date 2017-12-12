@@ -24,6 +24,14 @@ A Kubernetes templating and deployment tool.
 
 Note that Eastern requires `kubectl`.
 
+### Running from Docker Image
+
+Eastern is available on [Docker Hub](https://hub.docker.com/r/wongnai/eastern/) for continuous delivery users.
+
+```sh
+docker run -v `pwd`:/projects/ --rm wongnai/eastern eastern generate /projects/kubernetes.yaml
+```
+
 ### Installing from Git
 
 1. Clone this repository
@@ -76,13 +84,12 @@ Supplied `image_tag` is available in the template as `${IMAGE_TAG}`.
 
 While Eastern has been used in production at Wongnai for months, this open source release still need some works to be done before we could say that it is "1.0".
 
-- [ ] Setup Docker Hub build
+- [X] Setup Docker Hub build
 - [ ] Rewrite tests
 - [ ] Setup Travis
 - [ ] Plugin support
 - [ ] Migrate internal deployments to open source edition (we may have breaking changes before this point)
 - [ ] Release on PyPI
-- [ ] Setup Docker Hub tag
 
 ## License
 (C) 2017 Wongnai Media Co, Ltd.
