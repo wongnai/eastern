@@ -49,7 +49,13 @@ class Formatter:
         if not re.match(r'^\s*$', before):
             return line
 
-        command, args = after.strip().split(' ', 1)
+        splitted = after.strip().split(' ', 1)
+        command = splitted[0]
+        args = []
+
+        if len(splitted) > 1:
+            args = splitted[1]
+
         if command not in command_registry:
             return line
 
