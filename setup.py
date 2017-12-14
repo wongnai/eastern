@@ -8,6 +8,7 @@ setup(
     url='https://github.com/wongnai/eastern',
     install_requires=[
         'Click==6.7',
+        'click-log==0.2.1',
         'PyYAML==3.12',
         'stevedore==1.28.0',
     ],
