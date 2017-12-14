@@ -67,7 +67,6 @@ def wait_for_rolling_deploy(ctx, namespace, manifest):
 @click.version_option(prog_name='Project Eastern')
 @click.option('--kubectl', default='kubectl', help='Path to kubectl')
 @click.option('--context', '-c', help='Kubernetes context to use')
-@click.option('--verbose', '-c', help='Kubernetes context to use')
 @click.pass_context
 @click_log.simple_verbosity_option()
 def cli(ctx, context, **kwargs):
