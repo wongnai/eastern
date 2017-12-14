@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sentry
+  namespace: production
+  labels:
+    app: sentry
+spec:
+  selector:
+    app: sentry
+  ports:
+    - port: 80
+      targetPort: 9000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sentry
+  namespace: production
+spec:
+  rules:
+  - host: sentry.mysite.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: sentry
+          servicePort: 80
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: sentry
+  namespace: production
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sentry
+    spec:
+      containers:
+      - name: sentry
+        image: sentry:1.0
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "1m"
+        env:
+        - name: SENTRY_POSTGRES_HOST
+          value: postgres
+        - name: SENTRY_DB_NAME
+          value: postgres
+        - name: SENTRY_DB_USER
+          value: postgres
+        - name: SENTRY_DB_PASSWORD
+          value: postgres
+        - name: SENTRY_SECRET_KEY
+          value: example
+

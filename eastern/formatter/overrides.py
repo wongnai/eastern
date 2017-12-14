@@ -15,7 +15,8 @@ def _load(args, formatter, required=False, **kwargs):
         else:
             return '# ' + error
 
-    return fmt.format(override_file, env=formatter.env).split(os.linesep)
+    return fmt.format(
+        override_file, env=formatter.env).rstrip('\r\n').split(os.linesep)
 
 
 def load_strict(args, **kwargs):

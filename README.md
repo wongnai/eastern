@@ -85,9 +85,9 @@ Supplied `image_tag` is available in the template as `${IMAGE_TAG}`.
 While Eastern has been used in production at Wongnai for months, this open source release still need some works to be done before we could say that it is "1.0".
 
 - [X] Setup Docker Hub build
-- [ ] Rewrite tests
+- [X] Rewrite tests
 - [ ] Setup Travis
-- [ ] Plugin support
+- [X] Plugin support
 - [ ] Migrate internal deployments to open source edition (we may have breaking changes before this point)
 - [ ] Release on PyPI
 
