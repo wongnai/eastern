@@ -1,12 +1,13 @@
-import time
-import sys
 import subprocess
+import sys
+import time
 
 import click
 import yaml
 
 from . import formatter, kubectl
 from .kubeyml_helper import get_supported_rolling_resources
+from .plugin import manager
 
 
 def print_info(message):
@@ -41,7 +42,12 @@ def deploy_from_manifest(ctx, namespace, manifest):
     print_info('Deploying to namespace {}...'.format(namespace))
 
     ctx.obj['kubectl'].namespace = namespace
-    return ctx.obj['kubectl'].apply(data=manifest.encode('utf8'))
+
+    manifest = manager.chain('deploy_pre_hook', manifest, ctx=ctx)
+    out = ctx.obj['kubectl'].apply(data=manifest.encode('utf8'))
+    manager.map_func('deploy_post_hook', manifest, ctx=ctx)
+
+    return out
 
 
 def wait_for_rolling_deploy(ctx, namespace, manifest):
@@ -185,3 +191,6 @@ def job(ctx, file, namespace, tag, edit, **kwargs):
             'To cleanup manually, run `{kubectl} delete job {name}`'.format(
                 kubectl=' '.join(ctx.obj['kubectl'].get_launch_args()),
                 name=name))
+
+
+manager.map_method('cli_hook', cli)

@@ -4,13 +4,28 @@ from stevedore import extension
 
 
 class EasternPlugin(ABC):
-    def line_pre_hook(self, ext, line, formatter):
+    def line_pre_hook(self, ext, line, formatter, **kwargs):
         return line
 
-    def line_post_hook(self, ext, line, formatter):
+    def line_post_hook(self, ext, line, formatter, **kwargs):
         return line
 
-    def command_hook(self, ext, command, arg, formatter):
+    def command_hook(self, ext, command, arg, formatter, **kwargs):
+        pass
+
+    def format_pre_hook(self, ext, body, formatter, **kwargs):
+        return body
+
+    def format_post_hook(self, ext, body, formatter, **kwargs):
+        return body
+
+    def cli_hook(self, ext, cli, **kwargs):
+        pass
+
+    def deploy_pre_hook(self, manifest, ctx, **kwargs):
+        return manifest
+
+    def deploy_post_hook(self, manifest, ctx, **kwargs):
         pass
 
 

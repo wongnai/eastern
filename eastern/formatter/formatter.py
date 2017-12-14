@@ -19,8 +19,11 @@ class Formatter:
 
     def format(self):
         self.body = self.raw
+        self.body = manager.chain('format_pre_hook', self.body, formatter=self)
         self.body = self.interpolate_env(self.body)
         self.body = self.parse_lines(self.body)
+        self.body = manager.chain(
+            'format_post_hook', self.body, formatter=self)
 
         return self.body
 
