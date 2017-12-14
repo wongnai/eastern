@@ -5,7 +5,7 @@ import subprocess
 import click
 import yaml
 
-from . import fileformatter, kubectl
+from . import formatter, kubectl
 from .kubeyml_helper import get_supported_rolling_resources
 
 
@@ -23,7 +23,7 @@ def format_yaml(file, namespace, edit=False, print=True, extra=[]):
     }
     env.update(**dict(extra))
 
-    manifest = fileformatter.format(file, env)
+    manifest = formatter.format(file, env)
 
     if edit:
         manifest = click.edit(manifest)

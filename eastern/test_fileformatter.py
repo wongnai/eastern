@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from . import fileformatter
+from . import formatter
 
 
 class FileformatterTest(unittest.TestCase):
@@ -11,15 +11,14 @@ class FileformatterTest(unittest.TestCase):
     def test_fileformatter_function(self):
         expected_result = (
             Path(__file__).parents[1] / "fixture/expect_1.yaml").read_text()
-        result = fileformatter.format(
-            Path(__file__).parents[1] / "fixture/1.yaml")
+        result = formatter.format(Path(__file__).parents[1] / "fixture/1.yaml")
         self.assertEqual(result, expected_result)
 
     def test_fileformatter_function_with_env(self):
         expected_result = (
             Path(__file__).parents[1] / "fixture/expect_2.yaml").read_text()
         env = {"NAMESPACE": "beta", "IMAGE_TAG": "5.30.0-100"}
-        result = fileformatter.format(
+        result = formatter.format(
             Path(__file__).parents[1] / "fixture/2.yaml", env)
         self.assertEqual(result, expected_result)
 
@@ -27,7 +26,7 @@ class FileformatterTest(unittest.TestCase):
         expected_result = (
             Path(__file__).parents[1] / "fixture/expect_3.yaml").read_text()
         env = {"NAMESPACE": "dev", "IMAGE_TAG": "5.30.0-100"}
-        result = fileformatter.format(
+        result = formatter.format(
             Path(__file__).parents[1] / "fixture/3.yaml", env)
         self.assertEqual(result, expected_result)
 
@@ -35,16 +34,16 @@ class FileformatterTest(unittest.TestCase):
         expected_result = (
             Path(__file__).parents[1] / "fixture/expect_4.yaml").read_text()
         env = {"NAMESPACE": "unknown", "IMAGE_TAG": "5.30.0-100"}
-        # result = fileformatter.format("fixture/4.yaml", env)
+        # result = formatter.format("fixture/4.yaml", env)
         # self.assertEqual(result, expected_result)
-        self.assertRaises(Exception, fileformatter.format,
+        self.assertRaises(OSError, formatter.format,
                           Path(__file__).parents[1] / "fixture/4.yaml", env)
 
     def test_fileformatter_function_with_default_file(self):
         expected_result = (
             Path(__file__).parents[1] / "fixture/expect_5.yaml").read_text()
         env = {"NAMESPACE": "unknown", "IMAGE_TAG": "5.30.0-100"}
-        result = fileformatter.format(
+        result = formatter.format(
             Path(__file__).parents[1] / "fixture/5.yaml", env)
         self.assertEqual(result, expected_result)
 
@@ -52,7 +51,7 @@ class FileformatterTest(unittest.TestCase):
         expected_result = (
             Path(__file__).parents[1] / "fixture/expect_6.yaml").read_text()
         env = {"NAMESPACE": "unknown", "IMAGE_TAG": "5.30.0-100"}
-        result = fileformatter.format(
+        result = formatter.format(
             Path(__file__).parents[1] / "fixture/6.yaml", env)
         self.assertEqual(result, expected_result)
-        # self.assertRaises(Exception, fileformatter.format, "fixture/4.yaml", env)
+        # self.assertRaises(Exception, formatter.format, "fixture/4.yaml", env)

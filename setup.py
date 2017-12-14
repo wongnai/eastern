@@ -9,10 +9,15 @@ setup(
     install_requires=[
         'Click==6.7',
         'PyYAML==3.12',
+        'stevedore==1.28.0',
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
-    entry_points={'console_scripts': ['eastern = eastern.cli:cli']},
+    entry_points={
+        'console_scripts': ['eastern = eastern.cli:cli'],
+        'eastern.plugin':
+        ['overrides = eastern.formatter.overrides:OverridePlugin']
+    },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: System Administrators',
