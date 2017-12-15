@@ -1,5 +1,8 @@
 # Project Eastern
 
+[![Travis](https://api.travis-ci.org/wongnai/eastern.svg?branch=master)](https://travis-ci.org/wongnai/eastern)
+[![GitHub license](https://img.shields.io/github/license/wongnai/eastern.svg)](https://github.com/wongnai/eastern/blob/master/LICENSE)
+
 A Kubernetes templating and deployment tool.
 
 ## Table of Contents
