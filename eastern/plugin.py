@@ -6,19 +6,19 @@ from stevedore.exception import NoMatches
 
 
 class EasternPlugin(ABC):
-    def env_hook(self, ext, formatter, **kwargs):
+    def env_hook(self, formatter, **kwargs):
         return {}
 
-    def line_pre_hook(self, ext, line, formatter, **kwargs):
+    def line_pre_hook(self, line, formatter, **kwargs):
         return line
 
-    def line_post_hook(self, ext, line, formatter, **kwargs):
+    def line_post_hook(self, line, formatter, **kwargs):
         return line
 
-    def format_pre_hook(self, ext, body, formatter, **kwargs):
+    def format_pre_hook(self, body, formatter, **kwargs):
         return body
 
-    def format_post_hook(self, ext, body, formatter, **kwargs):
+    def format_post_hook(self, body, formatter, **kwargs):
         return body
 
     def deploy_pre_hook(self, manifest, ctx, **kwargs):
@@ -31,8 +31,7 @@ class EasternPlugin(ABC):
 class ChainMixin:
     def chain(self, func, value, *args, **kwargs):
         for extension in self:
-            value = getattr(extension.obj, func)(extension, value, *args,
-                                                 **kwargs)
+            value = getattr(extension.obj, func)(value, *args, **kwargs)
 
         return value
 

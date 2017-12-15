@@ -8,7 +8,7 @@ import yaml
 
 from . import formatter, kubectl
 from .kubeyml_helper import get_supported_rolling_resources
-from .plugin import get_cli_manager
+from .plugin import get_cli_manager, get_plugin_manager
 
 
 def print_info(message):
@@ -44,9 +44,10 @@ def deploy_from_manifest(ctx, namespace, manifest):
 
     ctx.obj['kubectl'].namespace = namespace
 
-    manifest = manager.chain('deploy_pre_hook', manifest, ctx=ctx)
+    plugin = get_plugin_manager()
+    manifest = plugin.chain('deploy_pre_hook', manifest, ctx=ctx)
     out = ctx.obj['kubectl'].apply(data=manifest.encode('utf8'))
-    manager.map_func('deploy_post_hook', manifest, ctx=ctx)
+    plugin.map_method('deploy_post_hook', manifest, ctx=ctx)
 
     return out
 
