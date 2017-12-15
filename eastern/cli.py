@@ -8,7 +8,7 @@ import yaml
 
 from . import formatter, kubectl
 from .kubeyml_helper import get_supported_rolling_resources
-from .plugin import manager
+from .plugin import get_cli_manager
 
 
 def print_info(message):
@@ -70,6 +70,7 @@ def wait_for_rolling_deploy(ctx, namespace, manifest):
 @click.pass_context
 @click_log.simple_verbosity_option()
 def cli(ctx, context, **kwargs):
+    click_log.basic_config()
     kctl = kubectl.Kubectl(kwargs['kubectl'])
     kctl.context = context
     ctx.obj = {'kubectl': kctl}
@@ -195,4 +196,7 @@ def job(ctx, file, namespace, tag, edit, **kwargs):
                 name=name))
 
 
-manager.map_method('cli_hook', cli)
+cli_manager = get_cli_manager()
+
+if cli_manager.extensions:
+    cli_manager.map(lambda ext, *args, **kwargs: ext.plugin(cli, ext))

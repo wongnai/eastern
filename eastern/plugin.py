@@ -1,3 +1,4 @@
+import functools
 from abc import ABC
 
 from stevedore import extension
@@ -49,5 +50,12 @@ def register_command(name, func):
     command_registry[name] = func
 
 
-manager = ExtensionChainManager(
-    namespace='eastern.plugin', invoke_on_load=True)
+@functools.lru_cache(None)
+def get_plugin_manager():
+    return ExtensionChainManager(
+        namespace='eastern.plugin', invoke_on_load=True)
+
+
+@functools.lru_cache(None)
+def get_cli_manager():
+    return extension.ExtensionManager(namespace='eastern.cli')

@@ -1,14 +1,18 @@
 import re
 import os
+import logging
 from pathlib import PurePath, Path
 
-from ..plugin import manager, command_registry
+from ..plugin import get_plugin_manager, command_registry
 from . import utils
 
 
 class Formatter:
+    logger = logging.getLogger(__name__)
+
     def __init__(self, raw, path='', env={}):
         self.raw = raw
+        self.plugin = get_plugin_manager()
 
         if not isinstance(path, PurePath):
             self.path = PurePath(path)
@@ -19,10 +23,11 @@ class Formatter:
 
     def format(self):
         self.body = self.raw
-        self.body = manager.chain('format_pre_hook', self.body, formatter=self)
+        self.body = self.plugin.chain(
+            'format_pre_hook', self.body, formatter=self)
         self.body = self.interpolate_env(self.body)
         self.body = self.parse_lines(self.body)
-        self.body = manager.chain(
+        self.body = self.plugin.chain(
             'format_post_hook', self.body, formatter=self)
 
         return self.body
@@ -42,7 +47,7 @@ class Formatter:
         if '#' not in line:
             return line
 
-        line = manager.chain('line_pre_hook', line, formatter=self)
+        line = self.plugin.chain('line_pre_hook', line, formatter=self)
         before, after = line.split('#', 1)
 
         # line must only have precending spaces
@@ -57,6 +62,7 @@ class Formatter:
             args = splitted[1]
 
         if command not in command_registry:
+            self.logger.debug('Command not found %s', command)
             return line
 
         output = command_registry[command](args, line=line, formatter=self)
@@ -66,7 +72,7 @@ class Formatter:
 
         output = os.linesep.join([before + item for item in output])
 
-        output = manager.chain('line_post_hook', output, formatter=self)
+        output = self.plugin.chain('line_post_hook', output, formatter=self)
         return output
 
 
