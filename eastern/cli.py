@@ -196,7 +196,4 @@ def job(ctx, file, namespace, tag, edit, **kwargs):
                 name=name))
 
 
-cli_manager = get_cli_manager()
-
-if cli_manager.extensions:
-    cli_manager.map(lambda ext, *args, **kwargs: ext.plugin(cli, ext))
+get_cli_manager().map(lambda ext, *args, **kwargs: ext.plugin(cli, ext))

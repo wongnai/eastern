@@ -2,26 +2,24 @@ import functools
 from abc import ABC
 
 from stevedore import extension
+from stevedore.exception import NoMatches
 
 
 class EasternPlugin(ABC):
+    def env_hook(self, ext, formatter, **kwargs):
+        return {}
+
     def line_pre_hook(self, ext, line, formatter, **kwargs):
         return line
 
     def line_post_hook(self, ext, line, formatter, **kwargs):
         return line
 
-    def command_hook(self, ext, command, arg, formatter, **kwargs):
-        pass
-
     def format_pre_hook(self, ext, body, formatter, **kwargs):
         return body
 
     def format_post_hook(self, ext, body, formatter, **kwargs):
         return body
-
-    def cli_hook(self, ext, cli, **kwargs):
-        pass
 
     def deploy_pre_hook(self, manifest, ctx, **kwargs):
         return manifest
@@ -39,15 +37,22 @@ class ChainMixin:
         return value
 
 
-class ExtensionChainManager(ChainMixin, extension.ExtensionManager):
+class MapIgnoreEmptyMixin:
+    def map(self, *args, **kwargs):
+        try:
+            return super().map(*args, **kwargs)
+        except NoMatches:
+            return []
+
+
+class ExtensionChainManager(ChainMixin, MapIgnoreEmptyMixin,
+                            extension.ExtensionManager):
     pass
 
 
-command_registry = {}
-
-
-def register_command(name, func):
-    command_registry[name] = func
+class ExtensionMayEmptyManager(MapIgnoreEmptyMixin,
+                               extension.ExtensionManager):
+    pass
 
 
 @functools.lru_cache(None)
@@ -58,4 +63,4 @@ def get_plugin_manager():
 
 @functools.lru_cache(None)
 def get_cli_manager():
-    return extension.ExtensionManager(namespace='eastern.cli')
+    return ExtensionMayEmptyManager(namespace='eastern.cli')

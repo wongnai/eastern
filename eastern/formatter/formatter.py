@@ -1,10 +1,15 @@
-import re
-import os
 import logging
-from pathlib import PurePath, Path
+import os
+import re
+from pathlib import Path, PurePath
 
-from ..plugin import get_plugin_manager, command_registry
+from stevedore.driver import DriverManager
+from stevedore.exception import NoMatches
+
 from . import utils
+from ..plugin import get_plugin_manager
+
+DRIVER_NS = 'eastern.command'
 
 
 class Formatter:
@@ -20,6 +25,11 @@ class Formatter:
             self.path = path
 
         self.env = env
+
+        envs = self.plugin.map_method('env_hook', formatter=self)
+
+        for item in envs:
+            self.env.update(**item)
 
     def format(self):
         self.body = self.raw
@@ -61,14 +71,19 @@ class Formatter:
         if len(splitted) > 1:
             args = splitted[1]
 
-        if command not in command_registry:
-            self.logger.debug('Command not found %s', command)
+        try:
+            func = DriverManager(DRIVER_NS, command)
+            func.propagate_map_exceptions = True
+        except NoMatches:
+            self.logger.debug('Command not found %s', command, exc_info=True)
             return line
 
-        output = command_registry[command](args, line=line, formatter=self)
+        output = func(lambda ext: ext.plugin(args, line=line, formatter=self))
 
-        if not isinstance(output, list):
-            output = [output]
+        if output is None:
+            output = []
+        elif isinstance(output, str):
+            output = output.split(os.linesep)
 
         output = os.linesep.join([before + item for item in output])
 

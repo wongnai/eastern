@@ -16,8 +16,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': ['eastern = eastern.cli:cli'],
-        'eastern.plugin':
-        ['overrides = eastern.formatter.overrides:OverridePlugin']
+        'eastern.command': [
+            'load? = eastern.formatter.overrides:load',
+            'load! = eastern.formatter.overrides:load_strict',
+        ]
     },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
