@@ -86,7 +86,7 @@ While Eastern has been used in production at Wongnai for months, this open sourc
 
 - [X] Setup Docker Hub build
 - [X] Rewrite tests
-- [ ] Setup Travis
+- [X] Setup Travis
 - [X] Plugin support
 - [ ] Migrate internal deployments to open source edition (we may have breaking changes before this point)
 - [ ] Release on PyPI
