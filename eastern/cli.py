@@ -156,7 +156,7 @@ def job(ctx, file, namespace, tag, edit, **kwargs):
 
         found_job = True
         name = '{}-{}'.format(item['metadata']['name'], tag)
-        name = name[:63]
+        name = name.lower()[:63]
         item['metadata']['name'] = name
 
     if not found_job:
