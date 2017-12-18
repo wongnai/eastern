@@ -144,7 +144,7 @@ def deploy(ctx, file, namespace, edit, wait, **kwargs):
 @click.pass_context
 def job(ctx, file, namespace, tag, edit, **kwargs):
     kwargs['set'].append(('IMAGE_TAG', tag))
-    manifest = format_yaml(file, namespace, edit=edit, extra=kwargs['set'])
+    manifest = format_yaml(file, namespace, edit=edit, extra=kwargs['set'], print=False)
 
     # Modify the name to contain imageTag
     manifest = list(yaml.load_all(manifest))
@@ -163,6 +163,7 @@ def job(ctx, file, namespace, tag, edit, **kwargs):
         raise click.BadParameter('Manifest does not contains any job')
 
     manifest = yaml.dump_all(manifest)
+    click.echo(manifest)
 
     # Run the actual deployment
     result = deploy_from_manifest(ctx, namespace, manifest)
