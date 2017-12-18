@@ -17,7 +17,7 @@ class RollingResources:
 
 
 def is_rolling_resource(doc):
-    if 'kind' not in doc:
+    if not doc or 'kind' not in doc:
         return False
 
     return doc['kind'] in ['Deployment', 'ReplicaSet', 'DaemonSet']
