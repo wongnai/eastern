@@ -148,17 +148,21 @@ def job(ctx, file, namespace, tag, edit, **kwargs):
 
     # Modify the name to contain imageTag
     manifest = list(yaml.load_all(manifest))
-    if len(manifest) > 1:
-        raise click.BadParameter('Manifest must have exactly one document')
 
-    manifest = manifest[0]
-    if manifest['kind'] != 'Job':
-        raise click.BadParameter('Manifest file is not a job')
+    found_job = False
+    for item in manifest:
+        if item['kind'] != 'Job':
+            continue
 
-    name = '{}-{}'.format(manifest['metadata']['name'], tag)
-    name = name[:63]
-    manifest['metadata']['name'] = name
-    manifest = yaml.dump(manifest)
+        found_job = True
+        name = '{}-{}'.format(item['metadata']['name'], tag)
+        name = name[:63]
+        item['metadata']['name'] = name
+
+    if not found_job:
+        raise click.BadParameter('Manifest does not contains any job')
+
+    manifest = yaml.dump_all(manifest)
 
     # Run the actual deployment
     result = deploy_from_manifest(ctx, namespace, manifest)
