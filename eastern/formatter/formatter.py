@@ -13,6 +13,11 @@ DRIVER_NS = 'eastern.command'
 
 
 class Formatter:
+    """
+    :param str raw: Template string
+    :param str path: Path to template
+    :param dict[str,str] env: List of variables
+    """
     logger = logging.getLogger(__name__)
 
     def __init__(self, raw, path='', env={}):
@@ -32,6 +37,9 @@ class Formatter:
             self.env.update(**item)
 
     def format(self):
+        """
+        :return: Formatted template
+        """
         self.body = self.raw
         self.body = self.plugin.chain(
             'format_pre_hook', self.body, formatter=self)
@@ -92,6 +100,13 @@ class Formatter:
 
 
 def format(filename, env={}):
+    """
+    Format a file
+
+    :param filename: Path to file
+    :type filename: str or :py:class:`pathlib.Path`
+    :param dict[str,str] env: List of variables
+    """
     if isinstance(filename, Path):
         file_obj = filename
     else:
