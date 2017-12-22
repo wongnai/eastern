@@ -54,18 +54,20 @@ class Kubectl:
 
         return process.returncode
 
-    def rollout_wait(self, name):
+    def rollout_wait(self, name, timeout=None):
         """
-        Run :command:`kubectl rollout stats` and wait for exit
+        Run :command:`kubectl rollout status` and wait for exit
 
         :param str name: Deployment name to wait
         :return: Return value of the command (0 for success)
         """
-        return subprocess.call(self.get_launch_args() + [
-            'rollout',
-            'status',
-            name,
-        ])
+        return subprocess.call(
+            self.get_launch_args() + [
+                'rollout',
+                'status',
+                name,
+            ],
+            timeout=timeout)
 
     def get_job_pod_name(self, name):
         """

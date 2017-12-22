@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [2.0.0] - 2017-12-19
+## [2.1.0] - 2017-12-22
+### Added
+- deploy/job now have `--timeout` option, defaulting to 60s
+
+## [2.0.0] - 2017-12-22
 ### Changed
 - Initial open source release 🎉
 
-[Unreleased]: https://github.com/wongnai/eastern/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/wongnai/eastern/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/wongnai/eastern/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/wongnai/eastern/compare/ae1c40a3dbf1a639ffaf5bc0034268b239ac1e3e...v2.0.0

@@ -52,7 +52,7 @@ def deploy_from_manifest(ctx, namespace, manifest):
     return out
 
 
-def wait_for_rolling_deploy(ctx, namespace, manifest):
+def wait_for_rolling_deploy(ctx, namespace, manifest, timeout=None):
     wait_resources = get_supported_rolling_resources(manifest)
     for resource in wait_resources:
         ns = resource.namespace or namespace
@@ -61,7 +61,29 @@ def wait_for_rolling_deploy(ctx, namespace, manifest):
             name, ns))
 
         ctx.obj['kubectl'].namespace = namespace
-        ctx.obj['kubectl'].rollout_wait(name)
+        ctx.obj['kubectl'].rollout_wait(name, timeout=timeout)
+
+
+class Timeout(Exception):
+    pass
+
+
+def wait_for_pod_to_exit(pod_name, kctl, timeout=None):
+    time_start = time.time()
+    phase = kctl.get_pod_phase(pod_name)
+
+    last_phase = ''
+
+    while phase not in ('', 'Succeeded'):
+        if phase != last_phase:
+            print_info('Pod {} is in phase {}'.format(pod_name, phase))
+            last_phase = phase
+
+        if timeout is not None and time_start + timeout < time.time():
+            raise Timeout
+
+        time.sleep(1)
+        phase = kctl.get_pod_phase(pod_name)
 
 
 @click.group(context_settings={'help_option_names': ['-h', '--help']})
@@ -120,15 +142,23 @@ def generate(file, namespace, **kwargs):
     help='Edit generated manifest before deploying')
 @click.option(
     '--wait/--no-wait', default=True, help='Wait for deployment to finish')
+@click.option(
+    '--timeout', default=60, help='Wait timeout (default 60s, 0 to disable)')
 @click.pass_context
-def deploy(ctx, file, namespace, edit, wait, **kwargs):
+def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
     manifest = format_yaml(file, namespace, edit=edit, extra=kwargs['set'])
     result = deploy_from_manifest(ctx, namespace, manifest)
 
     if not wait or result != 0:
         sys.exit(result)
 
-    wait_for_rolling_deploy(ctx, namespace, manifest)
+    if timeout == 0:
+        timeout = None
+
+    try:
+        wait_for_rolling_deploy(ctx, namespace, manifest, timeout)
+    except subprocess.TimeoutExpired:
+        raise click.ClickException('Rollout took too long, exiting...')
 
 
 @cli.command()
@@ -141,10 +171,13 @@ def deploy(ctx, file, namespace, edit, wait, **kwargs):
     '-e',
     is_flag=True,
     help='Edit generated manifest before deploying')
+@click.option(
+    '--timeout', default=60, help='Wait timeout (default 60s, 0 to disable)')
 @click.pass_context
-def job(ctx, file, namespace, tag, edit, **kwargs):
+def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
     kwargs['set'].append(('IMAGE_TAG', tag))
-    manifest = format_yaml(file, namespace, edit=edit, extra=kwargs['set'], print=False)
+    manifest = format_yaml(
+        file, namespace, edit=edit, extra=kwargs['set'], print=False)
 
     # Modify the name to contain imageTag
     manifest = list(yaml.load_all(manifest))
@@ -173,23 +206,22 @@ def job(ctx, file, namespace, tag, edit, **kwargs):
     # Wait until job complete
     pod_name = ctx.obj['kubectl'].get_job_pod_name(name)
 
-    phase = ctx.obj['kubectl'].get_pod_phase(pod_name)
-
-    last_phase = ''
-    while phase not in ('', 'Succeeded'):
-        if phase != last_phase:
-            print_info('Pod {} is in phase {}'.format(pod_name, phase))
-            last_phase = phase
-
-        time.sleep(1)
-        phase = ctx.obj['kubectl'].get_pod_phase(pod_name)
+    if timeout == 0:
+        timeout = None
 
     try:
-        click.echo(ctx.obj['kubectl'].get_pod_log(pod_name))
-    except subprocess.SubprocessError:
-        print_error(
-            'Cannot read log of pod {}, dumping pod data'.format(pod_name))
-        click.echo(yaml.dump(ctx.obj['kubectl'].get_pod(pod_name)))
+        wait_for_pod_to_exit(pod_name, ctx.obj['kubectl'], timeout)
+
+        try:
+            click.echo(ctx.obj['kubectl'].get_pod_log(pod_name))
+        except subprocess.SubprocessError:
+            print_error(
+                'Cannot read log of pod {}, dumping pod data'.format(pod_name))
+            click.echo(yaml.dump(ctx.obj['kubectl'].get_pod(pod_name)))
+    except Timeout:
+        print_error('Timed out, exiting...')
+    except KeyboardInterrupt:
+        pass
 
     print_info('Cleaning up job {}'.format(name))
     result = ctx.obj['kubectl'].delete_job(name)
