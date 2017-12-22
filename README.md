@@ -2,6 +2,7 @@
 
 [![Travis](https://api.travis-ci.org/wongnai/eastern.svg?branch=master)](https://travis-ci.org/wongnai/eastern)
 [![GitHub license](https://img.shields.io/github/license/wongnai/eastern.svg)](https://github.com/wongnai/eastern/blob/master/LICENSE)
+[![Read the Docs](https://img.shields.io/readthedocs/eastern.svg)](https://eastern.rtfd.org)
 [![PyPI](https://img.shields.io/pypi/v/eastern.svg)](https://pypi.python.org/pypi/eastern)
 [![Docker Hub](https://img.shields.io/docker/build/wongnai/eastern.svg)](https://hub.docker.com/r/wongnai/eastern/)
 
@@ -11,12 +12,14 @@ A Kubernetes templating and deployment tool.
 
 * [Features](#features)
 * [Installation](#installation)
+  * [Installing from PyPI](#installing-from-pypi)
+  * [Running from Docker Image](#running-from-docker-image)
   * [Installing from Git](#installing-from-git)
 * [Usage](#usage)
   * [Template language](#template-language)
   * [Deploy](#deploy)
   * [Deploy jobs](#deploy-jobs)
-* [Roadmap](#roadmap)
+* [Plugin](#plugin)
 * [License](#license)
 
 ## Features
@@ -24,6 +27,7 @@ A Kubernetes templating and deployment tool.
 * Simple, logicless template engine designed for YAML
 * Work with multiple environments
 * In use in production at [Wongnai](https://www.wongnai.com)
+* Extensible plugin architecture
 
 ## Installation
 
@@ -88,6 +92,9 @@ Eastern comes with [Job](https://kubernetes.io/docs/concepts/workloads/controlle
 To start a job, run `eastern job path/to/file.yaml namespace image_tag`. The file must have the job as its only document. Eastern will add `image_tag` as job suffix, deploy, wait until job's completion and remove the job.
 
 Supplied `image_tag` is available in the template as `${IMAGE_TAG}`.
+
+## Plugin
+Eastern is extensible. We use Eastern plugins ourselves. The API docs is available on [Read the Docs](https://eastern.readthedocs.io/en/latest/).
 
 ## License
 (C) 2017 Wongnai Media Co, Ltd.
