@@ -2,6 +2,8 @@
 
 [![Travis](https://api.travis-ci.org/wongnai/eastern.svg?branch=master)](https://travis-ci.org/wongnai/eastern)
 [![GitHub license](https://img.shields.io/github/license/wongnai/eastern.svg)](https://github.com/wongnai/eastern/blob/master/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/eastern.svg)](https://pypi.python.org/pypi/eastern)
+[![Docker Hub](https://img.shields.io/docker/build/wongnai/eastern.svg)](https://hub.docker.com/r/wongnai/eastern/)
 
 A Kubernetes templating and deployment tool.
 
@@ -26,6 +28,10 @@ A Kubernetes templating and deployment tool.
 ## Installation
 
 Note that Eastern requires `kubectl`.
+
+### Installing from PyPI
+
+Run `pip install eastern` to install.
 
 ### Running from Docker Image
 
