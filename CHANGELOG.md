@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - BREAKING: Job timeout now count only idle time.
   - The previous behavior resulting in failing deployments when rollout involve many pods. A workaround is to adjust timeout based on expected number of pod. This new behavior ensure that the default timeout should be relevant regardless of number of pods. It should still be adjusted if the pod takes longer to start.
   - The new timeout timer will reset when output of `kubectl rollout status` changed.
+- Updated kubectl
 
 ## [2.1.0] - 2017-12-22
 ### Added
