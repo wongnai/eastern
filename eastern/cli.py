@@ -238,7 +238,7 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
                 kubectl=' '.join(ctx.obj['kubectl'].get_launch_args()),
                 name=name))
         exit_status = 1
-    
+
     sys.exit(exit_status)
 
 
