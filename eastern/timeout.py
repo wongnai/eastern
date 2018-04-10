@@ -24,8 +24,6 @@ class ProcessTimeout:
         self._timeout.cancel()
 
     async def run(self, loop):
-        stdout = os.fdopen(sys.stdout.fileno(), 'wb')
-
         self._subprocess = await asyncio.create_subprocess_exec(
             stdout=asyncio.subprocess.PIPE,
             stderr=sys.stderr,
@@ -40,10 +38,10 @@ class ProcessTimeout:
                 try:
                     line = await self._subprocess.stdout.readuntil(b'\n')
                 except asyncio.IncompleteReadError as e:
-                    stdout.write(e.partial)
+                    sys.stdout.buffer.write(e.partial)
                     break
 
-                stdout.write(line)
+                sys.stdout.buffer.write(line)
 
                 if line != last_line:
                     # Reset the timer
@@ -57,7 +55,7 @@ class ProcessTimeout:
         await terminated
 
         # Flush the remaining output
-        stdout.write(await self._subprocess.stdout.read())
+        sys.stdout.buffer.write(await self._subprocess.stdout.read())
 
         if self._timed_out:
             raise subprocess.TimeoutExpired(self.args, self.timeout)
