@@ -13,7 +13,7 @@ setup(
         'stevedore==1.28.0',
     ],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
+    tests_require=['pytest', 'pytest-asyncio'],
     entry_points={
         'console_scripts': ['eastern = eastern.cli:cli'],
         'eastern.command': [

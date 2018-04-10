@@ -1,3 +1,4 @@
+import asyncio
 import subprocess
 import sys
 import time
@@ -240,5 +241,9 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
     
     sys.exit(exit_status)
 
+
+if sys.platform == 'win32':
+    loop = asyncio.ProactorEventLoop()
+    asyncio.set_event_loop(loop)
 
 get_cli_manager().map(lambda ext, *args, **kwargs: ext.plugin(cli, ext))

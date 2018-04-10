@@ -1,6 +1,7 @@
 import json
 import subprocess
 
+from .timeout import ProcessTimeout
 
 class Kubectl:
     """
@@ -61,13 +62,16 @@ class Kubectl:
         :param str name: Deployment name to wait
         :return: Return value of the command (0 for success)
         """
-        return subprocess.call(
-            self.get_launch_args() + [
-                'rollout',
-                'status',
-                name,
-            ],
-            timeout=timeout)
+        args = self.get_launch_args() + [
+            'rollout',
+            'status',
+            name,
+        ]
+
+        if timeout:
+            return ProcessTimeout(timeout, *args).run_sync()
+        else:
+            return subprocess.call(args)
 
     def get_job_pod_name(self, name):
         """
