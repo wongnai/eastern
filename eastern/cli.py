@@ -158,7 +158,8 @@ def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
     try:
         wait_for_rolling_deploy(ctx, namespace, manifest, timeout)
     except subprocess.TimeoutExpired:
-        raise click.ClickException('Rollout took too long, exiting...')
+        print_error('Rollout took too long, exiting...')
+        sys.exit(2)
 
 
 @cli.command()
@@ -175,6 +176,7 @@ def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
     '--timeout', default=60, help='Wait timeout (default 60s, 0 to disable)')
 @click.pass_context
 def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
+    exit_status = 0
     kwargs['set'].append(('IMAGE_TAG', tag))
     manifest = format_yaml(
         file, namespace, edit=edit, extra=kwargs['set'], print=False)
@@ -193,7 +195,8 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
         item['metadata']['name'] = name
 
     if not found_job:
-        raise click.BadParameter('Manifest does not contains any job')
+        print_error('Manifest does not contains any job')
+        sys.exit(1)
 
     manifest = yaml.dump_all(manifest)
     click.echo(manifest)
@@ -220,6 +223,7 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
             click.echo(yaml.dump(ctx.obj['kubectl'].get_pod(pod_name)))
     except Timeout:
         print_error('Timed out, exiting...')
+        exit_status = 2
     except KeyboardInterrupt:
         pass
 
@@ -232,6 +236,9 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
             'To cleanup manually, run `{kubectl} delete job {name}`'.format(
                 kubectl=' '.join(ctx.obj['kubectl'].get_launch_args()),
                 name=name))
+        exit_status = 1
+    
+    sys.exit(exit_status)
 
 
 get_cli_manager().map(lambda ext, *args, **kwargs: ext.plugin(cli, ext))
