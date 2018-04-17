@@ -6,8 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [3.0.1] - 2018-04-17
 ### Changed
 - Set PYTHONUNBUFFERED in Docker
+- Default timeout is 300s
 
 ## [3.0.0] - 2018-04-10
 ### Changed
@@ -25,7 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Initial open source release 🎉
 
-[Unreleased]: https://github.com/wongnai/eastern/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/wongnai/eastern/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/wongnai/eastern/compare/v3.0.0...v3.0.1
+[3.0.0]: https://github.com/wongnai/eastern/compare/v2.1.0...v3.0.0
 [3.0.0]: https://github.com/wongnai/eastern/compare/v2.1.0...v3.0.0
 [2.1.0]: https://github.com/wongnai/eastern/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/wongnai/eastern/compare/ae1c40a3dbf1a639ffaf5bc0034268b239ac1e3e...v2.0.0

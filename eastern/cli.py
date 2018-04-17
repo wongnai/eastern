@@ -144,7 +144,7 @@ def generate(file, namespace, **kwargs):
 @click.option(
     '--wait/--no-wait', default=True, help='Wait for deployment to finish')
 @click.option(
-    '--timeout', default=60, help='Wait timeout (default 60s, 0 to disable)')
+    '--timeout', default=300, help='Wait timeout (default 300s, 0 to disable)')
 @click.pass_context
 def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
     manifest = format_yaml(file, namespace, edit=edit, extra=kwargs['set'])
@@ -174,7 +174,7 @@ def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
     is_flag=True,
     help='Edit generated manifest before deploying')
 @click.option(
-    '--timeout', default=60, help='Wait timeout (default 60s, 0 to disable)')
+    '--timeout', default=300, help='Wait timeout (default 300s, 0 to disable)')
 @click.pass_context
 def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
     exit_status = 0
