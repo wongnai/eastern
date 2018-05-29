@@ -1,6 +1,7 @@
 import os
 
-from . import utils, formatter as fmt
+from . import utils
+from .. import formatter as fmt
 
 
 def load(args, formatter, required=False, **kwargs):

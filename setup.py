@@ -17,9 +17,10 @@ setup(
     entry_points={
         'console_scripts': ['eastern = eastern.cli:cli'],
         'eastern.command': [
-            'load? = eastern.formatter.overrides:load',
-            'load! = eastern.formatter.overrides:load_strict',
-        ]
+            'load? = eastern.yaml_formatter.overrides:load',
+            'load! = eastern.yaml_formatter.overrides:load_strict',
+        ],
+        'eastern.formatter': ['yaml = eastern.yaml_formatter:Formatter'],
     },
     classifiers=[
         'Development Status :: 5 - Production/Stable',

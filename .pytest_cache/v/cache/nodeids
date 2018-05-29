@@ -1,0 +1,13 @@
+[
+  "tests/test_kubeyml_helper.py::test_get_supported_rolling_resources",
+  "tests/test_overrides.py::test_load",
+  "tests/test_overrides.py::test_load_env",
+  "tests/test_overrides.py::test_load_required",
+  "tests/test_overrides.py::test_load_required_not_found",
+  "tests/test_overrides.py::test_load_default_file",
+  "tests/test_overrides.py::test_load_not_exists",
+  "tests/test_timeout.py::test_passed",
+  "tests/test_timeout.py::test_timeout_repeated_output",
+  "tests/test_timeout.py::test_timeout",
+  "tests/test_timeout.py::test_never_timeout"
+]
