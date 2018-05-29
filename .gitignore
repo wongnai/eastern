@@ -2,4 +2,4 @@ build
 *.egg-info
 .cache
 .eggs
-dist/
+.pytest_cache
