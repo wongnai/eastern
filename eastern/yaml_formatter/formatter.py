@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-from pathlib import Path
 
 from stevedore.driver import DriverManager
 from stevedore.exception import NoMatches
