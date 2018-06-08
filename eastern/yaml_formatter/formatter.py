@@ -44,10 +44,15 @@ class Formatter(BaseFormatter):
         return self.body
 
     def interpolate_env(self, text):
-        for key, value in self.env.items():
-            text = text.replace("${" + key + "}", value)
+        return re.sub(r'\${([^}]+)}', self.replace_env, text)
 
-        return text
+    def replace_env(self, match):
+        key = match.group(1)
+        if key in self.env:
+            return self.env[key]
+        else:
+            # warn here
+            self.logger.debug('Variable not found: %s', key, exc_info=True)
 
     def parse_lines(self, body):
         body_lines = body.split(os.linesep)
