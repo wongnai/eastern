@@ -51,8 +51,8 @@ class Formatter(BaseFormatter):
         if key in self.env:
             return self.env[key]
         else:
-            # warn here
-            self.logger.debug('Variable not found: %s', key, exc_info=True)
+            self.logger.warning('Interpolated variable not found: %s', key)
+            return match.group()
 
     def parse_lines(self, body):
         body_lines = body.split(os.linesep)
