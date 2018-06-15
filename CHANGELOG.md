@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.0.0] - 2018-06-15
+### Added
+- Pluggable formatters
+
+### Changed
+- BREAKING: The `formatter` module is moved to `yaml_formatter`. `formatter` now offer an abstract base class and the previous `format` function
+- BREAKING: Unmatched variable now cause warning (#4, @blead)
+
 ## [3.0.1] - 2018-04-17
 ### Changed
 - Set PYTHONUNBUFFERED in Docker
