@@ -23,7 +23,7 @@ class Kubectl:
         Get kubectl command line
 
         eg. ``['kubectl', '--namespace', 'production', '--context', 'production']``
-        
+
         :rtype: list[str]
         """
         out = [self.path]
@@ -136,6 +136,41 @@ class Kubectl:
             name,
         ])
 
+    def get_job_status(self, name):
+        """
+        Get Job status
+
+        :param str name: Job name
+        :rtype: JobStatus
+        :raises: KeyError in case there is no status in response
+        """
+        job = subprocess.check_output(
+            self.get_launch_args() + ['get', 'job', name, '-o', 'json'])
+        return JobStatus(json.loads(job)['status'])
+
+
+class JobStatus(object):
+    def __init__(self, json_dict):
+        self.json_dict = json_dict
+
+    @property
+    def succeeded(self):
+        if 'succeeded' in self.json_dict:
+            return self.json_dict['succeeded']
+        return 0
+
+    @property
+    def active(self):
+        if 'active' in self.json_dict:
+            return self.json_dict['active']
+        return 0
+
+    @property
+    def failed(self):
+        if 'failed' in self.json_dict:
+            return self.json_dict['failed']
+        return 0
+
 
 class KubernetesException(Exception):
     pass
@@ -144,7 +179,7 @@ class KubernetesException(Exception):
 class JobNotFound(KubernetesException):
     """
     Cannot find the given job
-    
+
     Raised by :py:func:`Kubectl.get_job_pod_name`
     """
     pass

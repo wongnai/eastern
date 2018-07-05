@@ -7,7 +7,7 @@ import click
 import click_log
 import yaml
 
-from . import formatter, kubectl
+from . import formatter, kubectl, job_manager
 from .kubeyml_helper import get_supported_rolling_resources
 from .plugin import get_cli_manager, get_plugin_manager
 
@@ -207,16 +207,20 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
     if result != 0:
         sys.exit(result)
 
-    # Wait until job complete
-    pod_name = ctx.obj['kubectl'].get_job_pod_name(name)
-
-    if timeout == 0:
-        timeout = None
+    job = job_manager.JobManager(ctx.obj['kubectl'], name)
 
     try:
-        wait_for_pod_to_exit(pod_name, ctx.obj['kubectl'], timeout)
+        # Wait pod to be started
+        job.wait_pod_scheduled()
 
+        if timeout == 0: # timeout = 0 means disable
+            timeout = None
+        # Wait until job complete
+        job.wait_completion(idle_timeout=timeout)
+
+        pod_name = job.get_pod_name()
         try:
+            # Just print only one pod
             click.echo(ctx.obj['kubectl'].get_pod_log(pod_name))
         except subprocess.SubprocessError:
             print_error(
@@ -227,17 +231,18 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
         exit_status = 2
     except KeyboardInterrupt:
         pass
-
-    print_info('Cleaning up job {}'.format(name))
-    result = ctx.obj['kubectl'].delete_job(name)
-
-    if result != 0:
-        print_error('Failed to cleanup job "{}"!'.format(name))
-        print_info(
-            'To cleanup manually, run `{kubectl} delete job {name}`'.format(
-                kubectl=' '.join(ctx.obj['kubectl'].get_launch_args()),
-                name=name))
-        exit_status = 1
+    finally:
+        try:
+            print_info('Cleaning up job {}'.format(name))
+            job.remove()
+        except job_manager.JobOperationException as e:
+            print_error('Failed to cleanup job "{}"!'.format(name))
+            print_error(e)
+            print_info(
+                'To cleanup manually, run `{kubectl} delete job {name}`'.format(
+                    kubectl=' '.join(ctx.obj['kubectl'].get_launch_args()),
+                    name=name))
+            exit_status = 1
 
     sys.exit(exit_status)
 

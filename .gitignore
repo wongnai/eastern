@@ -3,3 +3,5 @@ build
 .cache
 .eggs
 .pytest_cache
+__pycache__
+dist
