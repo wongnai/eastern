@@ -155,21 +155,15 @@ class JobStatus(object):
 
     @property
     def succeeded(self):
-        if 'succeeded' in self.json_dict:
-            return self.json_dict['succeeded']
-        return 0
+        return self.json_dict.get('succeeded', 0)
 
     @property
     def active(self):
-        if 'active' in self.json_dict:
-            return self.json_dict['active']
-        return 0
+        return self.json_dict.get('active', 0)
 
     @property
     def failed(self):
-        if 'failed' in self.json_dict:
-            return self.json_dict['failed']
-        return 0
+        return self.json_dict.get('failed', 0)
 
 
 class KubernetesException(Exception):

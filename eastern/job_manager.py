@@ -1,6 +1,9 @@
 import time
+import logging
 
 from .timeout import ProcessTimeout
+
+logger = logging.getLogger(__name__)
 
 
 class JobManager(object):
@@ -29,7 +32,7 @@ class JobManager(object):
 
         try:
             retry(lambda: self.is_pod_scheduled(), count=timeout_second)
-        except RetryLimitReach:
+        except RetryLimitReached:
             raise JobTimedOutException("pod not scheduled in time")
 
     def is_completed(self):
@@ -56,7 +59,7 @@ class JobManager(object):
             if self.is_completed():
                 return
 
-            # wait for pod phrase to ready to be logged
+            # wait for pod phrase to be ready before tail log
             retry(lambda: is_pod_phrase_can_get_log(
                 self.kubectl.get_pod_phase(pod_name)))
 
@@ -103,11 +106,11 @@ def retry(bool_fn, count=10, interval=1):
             return
         count = count - 1
         time.sleep(interval)  # second to sleep
-    raise RetryLimitReach()
+    raise RetryLimitReached()
 
 
 def is_pod_phrase_can_get_log(phrase):
-    print("Pod phrase: ", phrase)
+    logger.debug('Pod phrase: %s', phrase)
     return phrase and phrase.lower() in ["running", "succeeded", "failed"]
 
 
@@ -119,5 +122,5 @@ class JobTimedOutException(Exception):
     pass
 
 
-class RetryLimitReach(Exception):
+class RetryLimitReached(Exception):
     pass
