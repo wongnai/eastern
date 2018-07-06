@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.1.0] - 2018-07-06
+### Changed
+- Job deployment will always removed after job success or failed
+- Fix exception raised when deploy job but pod was not scheduled
+
 ## [4.0.0] - 2018-06-15
 ### Added
 - Pluggable formatters
