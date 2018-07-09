@@ -5,6 +5,8 @@ from .timeout import ProcessTimeout
 
 logger = logging.getLogger(__name__)
 
+WAIT_POD_READY_TIMEOUT = 30 * 60 # 30 mins
+
 
 class JobManager(object):
     def __init__(self, kubectl, job_name):
@@ -61,7 +63,7 @@ class JobManager(object):
 
             # wait for pod phrase to be ready before tail log
             retry(lambda: is_pod_phrase_can_get_log(
-                self.kubectl.get_pod_phase(pod_name)))
+                self.kubectl.get_pod_phase(pod_name)), count=WAIT_POD_READY_TIMEOUT)
 
             args = self.kubectl.get_launch_args() + ['logs', '-f', pod_name]
             ProcessTimeout(idle_timeout, *args).run_sync()
