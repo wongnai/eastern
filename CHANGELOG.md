@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.1.1] - 2018-08-06
+### Changed
+- Updated dependencies
+- Docker now use Python 3.7
+- Updated Kubernetes client in Docker image to 1.11.1
+
 ## [4.1.0] - 2018-07-06
 ### Changed
 - Job deployment will always removed after job success or failed
@@ -41,7 +47,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Initial open source release 🎉
 
-[Unreleased]: https://github.com/wongnai/eastern/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/wongnai/eastern/compare/v4.1.1...HEAD
+[4.1.1]: https://github.com/wongnai/eastern/compare/v4.1.0...v4.1.1
+[4.1.0]: https://github.com/wongnai/eastern/compare/v4.0.0...v4.1.0
+[4.0.0]: https://github.com/wongnai/eastern/compare/v3.0.1...v4.0.0
 [3.0.1]: https://github.com/wongnai/eastern/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/wongnai/eastern/compare/v2.1.0...v3.0.0
 [3.0.0]: https://github.com/wongnai/eastern/compare/v2.1.0...v3.0.0
