@@ -1,7 +1,7 @@
-FROM python:3.6-stretch
+FROM python:3.7-stretch
 ENV PYTHONUNBUFFERED=true
 
-RUN wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.9.6/bin/linux/amd64/kubectl && \
+RUN wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.11.1/bin/linux/amd64/kubectl && \
     chmod +x /usr/local/bin/kubectl
 
 COPY . /app/
