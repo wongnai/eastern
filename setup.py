@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='eastern',
     description='Simple Kubernetes Deployment',
-    version='4.1.1',
+    version='4.1.2',
     packages=find_packages(),
     url='https://github.com/wongnai/eastern',
     install_requires=[
