@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.0] - 2018-09-24
+### Changed
+- Deploy now exit with code 3 when `kubectl rollout wait` exit with status code
+
 ## [4.1.2] - 2018-08-17
 ### Fixed
 - Republished due to unclean build directory

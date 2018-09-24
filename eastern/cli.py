@@ -62,12 +62,13 @@ def wait_for_rolling_deploy(ctx, namespace, manifest, timeout=None):
             name, ns))
 
         ctx.obj['kubectl'].namespace = namespace
-        ctx.obj['kubectl'].rollout_wait(name, timeout=timeout)
+        exit_code = ctx.obj['kubectl'].rollout_wait(name, timeout=timeout)
+        if exit_code != 0:
+            raise subprocess.CalledProcessError(returncode=exit_code, cmd='')
 
 
 class Timeout(Exception):
     pass
-
 
 def wait_for_pod_to_exit(pod_name, kctl, timeout=None):
     time_start = time.time()
@@ -158,6 +159,9 @@ def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
 
     try:
         wait_for_rolling_deploy(ctx, namespace, manifest, timeout)
+    except subprocess.CalledProcessError as e:
+        print_error('Improper exit with code ' + str(e.returncode) + ', exiting...')
+        sys.exit(3)
     except subprocess.TimeoutExpired:
         print_error('Rollout took too long, exiting...')
         sys.exit(2)
