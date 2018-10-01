@@ -1,3 +1,11 @@
 language: python
 python: 3.6
 script: python setup.py test
+deploy:
+  provider: pypi
+  user: wongnai
+  password:
+    secure: n2/uWHH6YUDLm4CIZMLfRkJlJml2PeST2Jn8sU7qGhmiyiPDGj1GTR9KxxhkML9OV5MdpVURE65Mkwg/9FwC2F4m6rVlwQfpvGvF+YWToZpJIUlIH0yyfBE74iJZULonL72vxHKCk/ZkGblAWxkI0pPxMSQ87IdJLGqnPlikqAdY+zzcj7KREMPLlE1mzaKmKtFRTJ5qkWYfpjf1cYwhfRrMp7F9Y9pZt3Djve9LbxMMh2HRAKpZcI1l1rGW99yj5PqiEILp/HYeCntfTx9FHhBgqeVS/7j61Zmb9bWctUzY9+PDznji3zigEbKccXWb+LpSt+tvyYZM6zpHituTZjmyewUCRIJPddbX6EPTTS7/Wz7VpHzyY/mOoRdaxQ69UXCqlJ9xUcbaiKW6NJG+hXi7Je4umtTAgGzGhRsfnFZw5XGBAa6+An1nob3IAWZllwwoCfTTIRTK8PmA5PqhtsJxq73OMl5vxJynrJpIN/PJGBKneO/ThRGZHTrsh2gsK1K4J5oyFJg5fdyX6hbIZ+32KOoekhCkHybm3CzKKhmY+REQKrZsq21OQ9ZbM8EBwRF4bLD7FSq0aNuBsSCEHM64BoxWn/XLwcuwpCC6ALvkEXwxNDYDSCHucXGWSLaGa0fPST2s6hXKzFrVfvn3moIEaLXe/kDGrAAgpWsN8ds=
+  on:
+    tags: true
+  distributions: "sdist bdist_wheel"
