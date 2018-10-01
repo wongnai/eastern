@@ -18,8 +18,8 @@ def test_timeout():
 
 @pytest.mark.asyncio
 async def test_never_timeout(event_loop):
-	process = ProcessTimeout(0.01, 'cat', '/dev/urandom')
+	process = ProcessTimeout(0.2, 'cat', '/dev/urandom')
 	process_status = asyncio.ensure_future(process.run(event_loop))
-	await asyncio.sleep(0.1)
+	await asyncio.sleep(0.01)
 	assert not process_status.done(), 'Process should be running, but got ' + repr(process_status.result())
 	process_status.cancel()
