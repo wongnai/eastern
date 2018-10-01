@@ -1,8 +1,12 @@
+import os.path
+
 from setuptools import setup, find_packages
 
 setup(
     name='eastern',
     description='Simple Kubernetes Deployment',
+    long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
+    long_description_content_type='text/markdown',
     version='4.2.0',
     packages=find_packages(),
     url='https://github.com/wongnai/eastern',
@@ -28,4 +32,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: System :: Systems Administration',
-    ])
+    ],
+    license='MIT'
+)
