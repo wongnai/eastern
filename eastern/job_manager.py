@@ -46,7 +46,7 @@ class JobManager(object):
         status = self.kubectl.get_job_status(self.job_name)
         return (status.failed + status.succeeded > 0) and status.active == 0
 
-    def is_successed(self):
+    def is_succeeded(self):
         """
         Check if job was completed and was succeeded.
 
