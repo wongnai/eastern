@@ -231,7 +231,7 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
                 'Cannot read log of pod {}, dumping pod data'.format(pod_name))
             click.echo(yaml.dump(ctx.obj['kubectl'].get_pod(pod_name)))
 
-        if not job.is_successed():
+        if not job.is_succeeded():
             print_error('Job failed...')
             exit_status = 3
     except Timeout:
