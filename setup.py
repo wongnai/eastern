@@ -7,7 +7,7 @@ setup(
     description='Simple Kubernetes Deployment',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
     long_description_content_type='text/markdown',
-    version='4.2.1',
+    version='4.3.0',
     packages=find_packages(),
     url='https://github.com/wongnai/eastern',
     install_requires=[
