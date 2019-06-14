@@ -13,7 +13,7 @@ setup(
     install_requires=[
         'Click~=6.7',
         'click-log~=0.3.2',
-        'PyYAML~=3.13',
+        'PyYAML~=4.2b4',
         'stevedore~=1.29.0',
     ],
     setup_requires=['pytest-runner'],
