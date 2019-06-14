@@ -3,7 +3,7 @@ import os.path
 from setuptools import setup, find_packages
 
 setup(
-    name='eastern',
+    name='eastern-v2',
     description='Simple Kubernetes Deployment',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
     long_description_content_type='text/markdown',
