@@ -1,4 +1,4 @@
-# Project Eastern V2
+# Project Eastern v2
 
 [![Travis](https://api.travis-ci.com/seehait/eastern.svg?branch=master)](https://travis-ci.com/seehait/eastern)
 [![GitHub license](https://img.shields.io/github/license/seehait/eastern.svg)](https://github.com/seehait/eastern/blob/master/LICENSE)
@@ -10,7 +10,7 @@ A Kubernetes templating and deployment tool.
 
 ## Table of Contents
 
-- [Project Eastern V2](#project-eastern-v2)
+- [Project Eastern v2](#project-eastern-v2)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Installation](#installation)
@@ -36,11 +36,11 @@ Note that Eastern requires `kubectl`.
 
 ### Installing from PyPI
 
-Run `pip install eastern` to install.
+Run `pip install eastern-v2` to install.
 
 ### Running from Docker Image
 
-Eastern V2 is available on [Docker Hub](https://hub.docker.com/r/seehait/eastern/) for continuous delivery users.
+Eastern v2 is available on [Docker Hub](https://hub.docker.com/r/seehait/eastern/) for continuous delivery users.
 
 ```sh
 docker run -v `pwd`:/projects/ --rm seehait/eastern eastern generate /projects/kubernetes.yaml
@@ -99,6 +99,7 @@ Eastern is extensible. We use Eastern plugins ourselves. The API docs is availab
 
 ## License
 (C) 2019 Seehait Chockthanyawat
+
 Originally by 2017 Wongnai Media Co, Ltd.
 
-Eastern is licensed under [MIT License](LICENSE)
+Eastern v2 is licensed under [MIT License](LICENSE)
