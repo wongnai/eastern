@@ -9,7 +9,7 @@ setup(
     long_description_content_type='text/markdown',
     version='4.4.0',
     packages=find_packages(),
-    url='https://github.com/wongnai/eastern',
+    url='https://github.com/seehait/eastern',
     install_requires=[
         'Click~=6.7',
         'click-log~=0.3.2',

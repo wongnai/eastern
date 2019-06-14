@@ -1,32 +1,33 @@
-# Project Eastern
+# Project Eastern V2
 
-[![Travis](https://api.travis-ci.org/wongnai/eastern.svg?branch=master)](https://travis-ci.org/wongnai/eastern)
-[![GitHub license](https://img.shields.io/github/license/wongnai/eastern.svg)](https://github.com/wongnai/eastern/blob/master/LICENSE)
-[![Read the Docs](https://img.shields.io/readthedocs/eastern.svg)](https://eastern.rtfd.org)
-[![PyPI](https://img.shields.io/pypi/v/eastern.svg)](https://pypi.python.org/pypi/eastern)
-[![Docker Hub](https://img.shields.io/docker/build/wongnai/eastern.svg)](https://hub.docker.com/r/wongnai/eastern/)
+[![Travis](https://api.travis-ci.com/seehait/eastern.svg?branch=master)](https://travis-ci.com/seehait/eastern)
+[![GitHub license](https://img.shields.io/github/license/seehait/eastern.svg)](https://github.com/seehait/eastern/blob/master/LICENSE)
+[![Read the Docs](https://readthedocs.org/projects/eastern-v2/badge/?version=latest)](https://eastern-v2.readthedocs.io/en/latest/?badge=latest)
+[![PyPI](https://img.shields.io/pypi/v/eastern-v2.svg)](https://pypi.python.org/pypi/eastern-v2)
+[![Docker Hub](https://img.shields.io/docker/build/seehait/eastern.svg)](https://hub.docker.com/r/seehait/eastern/)
 
 A Kubernetes templating and deployment tool.
 
 ## Table of Contents
 
-* [Features](#features)
-* [Installation](#installation)
-  * [Installing from PyPI](#installing-from-pypi)
-  * [Running from Docker Image](#running-from-docker-image)
-  * [Installing from Git](#installing-from-git)
-* [Usage](#usage)
-  * [Template language](#template-language)
-  * [Deploy](#deploy)
-  * [Deploy jobs](#deploy-jobs)
-* [Plugin](#plugin)
-* [License](#license)
+- [Project Eastern V2](#project-eastern-v2)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [Installing from PyPI](#installing-from-pypi)
+    - [Running from Docker Image](#running-from-docker-image)
+    - [Installing from Git](#installing-from-git)
+  - [Usage](#usage)
+    - [Template language](#template-language)
+    - [Deploy](#deploy)
+    - [Deploy jobs](#deploy-jobs)
+  - [Plugin](#plugin)
+  - [License](#license)
 
 ## Features
 
 * Simple, logicless template engine designed for YAML
 * Work with multiple environments
-* In use in production at [Wongnai](https://www.wongnai.com)
 * Extensible plugin architecture
 
 ## Installation
@@ -39,10 +40,10 @@ Run `pip install eastern` to install.
 
 ### Running from Docker Image
 
-Eastern is available on [Docker Hub](https://hub.docker.com/r/wongnai/eastern/) for continuous delivery users.
+Eastern V2 is available on [Docker Hub](https://hub.docker.com/r/seehait/eastern/) for continuous delivery users.
 
 ```sh
-docker run -v `pwd`:/projects/ --rm wongnai/eastern eastern generate /projects/kubernetes.yaml
+docker run -v `pwd`:/projects/ --rm seehait/eastern eastern generate /projects/kubernetes.yaml
 ```
 
 ### Installing from Git
@@ -67,7 +68,7 @@ Additional variables can be passed by `-s var=value`.
 For example:
 
 ```yaml
-image: wongnai/eastern:${IMAGE_TAG}
+image: seehait/eastern:${IMAGE_TAG}
 env:
   # load! env-${NAMESPACE}.yaml, env.yaml
 ```
@@ -94,9 +95,10 @@ To start a job, run `eastern job path/to/file.yaml namespace image_tag`. The fil
 Supplied `image_tag` is available in the template as `${IMAGE_TAG}`.
 
 ## Plugin
-Eastern is extensible. We use Eastern plugins ourselves. The API docs is available on [Read the Docs](https://eastern.readthedocs.io/en/latest/).
+Eastern is extensible. We use Eastern plugins ourselves. The API docs is available on [Read the Docs](https://eastern-v2.readthedocs.io/en/latest/).
 
 ## License
-(C) 2017 Wongnai Media Co, Ltd.
+(C) 2019 Seehait Chockthanyawat
+Originally by 2017 Wongnai Media Co, Ltd.
 
 Eastern is licensed under [MIT License](LICENSE)

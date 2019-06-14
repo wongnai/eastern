@@ -45,9 +45,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Eastern'
-copyright = '2017, Wongnai'
-author = 'Wongnai'
+project = 'Eastern v2'
+copyright = '2019 Seehait Chockthanyawat, Originally by 2017, Wongnai'
+author = 'Seehait Chockthanyawat'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -130,7 +130,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Eastern.tex', 'Eastern Documentation', 'Wongnai', 'manual'),
+    (master_doc, 'Eastern.tex', 'Eastern Documentation', 'Seehait Chockthanyawat', 'manual'),
 ]
 
 # -- Options for manual page output ---------------------------------------
