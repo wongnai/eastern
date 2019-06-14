@@ -83,7 +83,7 @@ class Kubectl:
         :raises JobNotFound: If no pod for that job is found
         """
         out = subprocess.check_output(self.get_launch_args() + [
-            'get', 'pod', '-a', '--selector=job-name={}'.format(name), '-o',
+            'get', 'pod', '--all-namespaces', '--selector=job-name={}'.format(name), '-o',
             'jsonpath={.items..metadata.name}'
         ])
 
