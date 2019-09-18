@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.4.1] - 2019-09-18
+### Changed
+- Bump pyyaml (@seehait)
+
 ## [4.4.0] - 2019-09-18
 ### Changed
 - Docker image now use Debian Buster
 - Docker image now comes with Kubectl 1.15.3
 
 ### Fixed
-- Compatibility with kubectl 1.15
+- Compatibility with kubectl 1.15 (@seehait)
 
 ## [4.3.0] - 2018-11-03
 ### Changed
