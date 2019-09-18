@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [4.4.0] - 2019-09-18
+### Changed
+- Docker image now use Debian Buster
+- Docker image now comes with Kubectl 1.15.3
+
+### Fixed
+- Compatibility with kubectl 1.15
+
 ## [4.3.0] - 2018-11-03
 ### Changed
 - Job now exit with code 3 when job failure status is greater than zero.
@@ -62,7 +71,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Initial open source release 🎉
 
-[Unreleased]: https://github.com/wongnai/eastern/compare/v4.3.0...HEAD
+[Unreleased]: https://github.com/wongnai/eastern/compare/v4.4.0...HEAD
+[4.4.0]: https://github.com/wongnai/eastern/compare/v4.3.0...v4.4.0
 [4.3.0]: https://github.com/wongnai/eastern/compare/v4.2.1...v4.3.0
 [4.2.1]: https://github.com/wongnai/eastern/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/wongnai/eastern/compare/v4.1.2...v4.2.0
