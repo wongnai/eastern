@@ -70,6 +70,7 @@ def wait_for_rolling_deploy(ctx, namespace, manifest, timeout=None):
 class Timeout(Exception):
     pass
 
+
 def wait_for_pod_to_exit(pod_name, kctl, timeout=None):
     time_start = time.time()
     phase = kctl.get_pod_phase(pod_name)
@@ -118,12 +119,11 @@ def parse_set(ctx, param, value):
 @cli.command()
 @click.argument('file', type=click.Path(exists=True))
 @click.argument('namespace', default='default')
-@click.option(
-    '--set',
-    '-s',
-    callback=parse_set,
-    multiple=True,
-    help='Additional variables to set')
+@click.option('--set',
+              '-s',
+              callback=parse_set,
+              multiple=True,
+              help='Additional variables to set')
 def generate(file, namespace, **kwargs):
     format_yaml(file, namespace, extra=kwargs['set'])
 
@@ -131,21 +131,21 @@ def generate(file, namespace, **kwargs):
 @cli.command()
 @click.argument('file', type=click.Path(exists=True))
 @click.argument('namespace', default='default')
-@click.option(
-    '--set',
-    '-s',
-    callback=parse_set,
-    multiple=True,
-    help='Additional variables to set')
-@click.option(
-    '--edit',
-    '-e',
-    is_flag=True,
-    help='Edit generated manifest before deploying')
-@click.option(
-    '--wait/--no-wait', default=True, help='Wait for deployment to finish')
-@click.option(
-    '--timeout', default=300, help='Wait timeout (default 300s, 0 to disable)')
+@click.option('--set',
+              '-s',
+              callback=parse_set,
+              multiple=True,
+              help='Additional variables to set')
+@click.option('--edit',
+              '-e',
+              is_flag=True,
+              help='Edit generated manifest before deploying')
+@click.option('--wait/--no-wait',
+              default=True,
+              help='Wait for deployment to finish')
+@click.option('--timeout',
+              default=300,
+              help='Wait timeout (default 300s, 0 to disable)')
 @click.pass_context
 def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
     manifest = format_yaml(file, namespace, edit=edit, extra=kwargs['set'])
@@ -160,7 +160,8 @@ def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
     try:
         wait_for_rolling_deploy(ctx, namespace, manifest, timeout)
     except subprocess.CalledProcessError as e:
-        print_error('Improper exit with code ' + str(e.returncode) + ', exiting...')
+        print_error('Improper exit with code ' + str(e.returncode) +
+                    ', exiting...')
         sys.exit(3)
     except subprocess.TimeoutExpired:
         print_error('Rollout took too long, exiting...')
@@ -172,19 +173,22 @@ def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
 @click.argument('namespace', default='default')
 @click.argument('tag')
 @click.option('--set', '-s', callback=parse_set, multiple=True)
-@click.option(
-    '--edit',
-    '-e',
-    is_flag=True,
-    help='Edit generated manifest before deploying')
-@click.option(
-    '--timeout', default=300, help='Wait timeout (default 300s, 0 to disable)')
+@click.option('--edit',
+              '-e',
+              is_flag=True,
+              help='Edit generated manifest before deploying')
+@click.option('--timeout',
+              default=300,
+              help='Wait timeout (default 300s, 0 to disable)')
 @click.pass_context
 def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
     exit_status = 0
     kwargs['set'].append(('IMAGE_TAG', tag))
-    manifest = format_yaml(
-        file, namespace, edit=edit, extra=kwargs['set'], print=False)
+    manifest = format_yaml(file,
+                           namespace,
+                           edit=edit,
+                           extra=kwargs['set'],
+                           print=False)
 
     # Modify the name to contain imageTag
     manifest = list(yaml.load_all(manifest))
@@ -217,7 +221,7 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
         # Wait pod to be started
         job.wait_pod_scheduled()
 
-        if timeout == 0: # timeout = 0 means disable
+        if timeout == 0:  # timeout = 0 means disable
             timeout = None
         # Wait until job complete
         job.wait_completion(idle_timeout=timeout)

@@ -22,12 +22,9 @@ def test_load():
 
 
 def test_load_env():
-    assert_format_equal(
-        TEST_ROOT / 'load_env' / 'load.yaml',
-        TEST_ROOT / 'load_env' / 'expect.yaml',
-        env={
-            'NAMESPACE': 'default'
-        })
+    assert_format_equal(TEST_ROOT / 'load_env' / 'load.yaml',
+                        TEST_ROOT / 'load_env' / 'expect.yaml',
+                        env={'NAMESPACE': 'default'})
 
 
 def test_load_required():
@@ -37,8 +34,8 @@ def test_load_required():
 
 def test_load_required_not_found():
     with pytest.raises(OSError):
-        result = formatter.format(
-            TEST_ROOT / 'load_required_not_found' / 'load.yaml')
+        result = formatter.format(TEST_ROOT / 'load_required_not_found' /
+                                  'load.yaml')
 
 
 def test_load_default_file():
@@ -47,9 +44,6 @@ def test_load_default_file():
 
 
 def test_load_not_exists():
-    assert_format_equal(
-        TEST_ROOT / 'load_not_exists' / 'load.yaml',
-        TEST_ROOT / 'load_not_exists' / 'expect.yaml',
-        env={
-            'NAMESPACE': 'notexists'
-        })
+    assert_format_equal(TEST_ROOT / 'load_not_exists' / 'load.yaml',
+                        TEST_ROOT / 'load_not_exists' / 'expect.yaml',
+                        env={'NAMESPACE': 'notexists'})

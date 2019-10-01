@@ -34,12 +34,14 @@ class Formatter(BaseFormatter):
         :return: Formatted template
         """
         self.body = self.raw
-        self.body = self.plugin.chain(
-            'format_pre_hook', self.body, formatter=self)
+        self.body = self.plugin.chain('format_pre_hook',
+                                      self.body,
+                                      formatter=self)
         self.body = self.interpolate_env(self.body)
         self.body = self.parse_lines(self.body)
-        self.body = self.plugin.chain(
-            'format_post_hook', self.body, formatter=self)
+        self.body = self.plugin.chain('format_post_hook',
+                                      self.body,
+                                      formatter=self)
 
         return self.body
 

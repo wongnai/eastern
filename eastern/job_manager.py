@@ -5,10 +5,11 @@ from .timeout import ProcessTimeout
 
 logger = logging.getLogger(__name__)
 
-WAIT_POD_READY_TIMEOUT = 30 * 60 # 30 mins
+WAIT_POD_READY_TIMEOUT = 30 * 60  # 30 mins
 
 
 class JobManager(object):
+
     def __init__(self, kubectl, job_name):
         self.kubectl = kubectl
         self.job_name = job_name
@@ -72,7 +73,8 @@ class JobManager(object):
 
             # wait for pod phrase to be ready before tail log
             retry(lambda: is_pod_phrase_can_get_log(
-                self.kubectl.get_pod_phase(pod_name)), count=WAIT_POD_READY_TIMEOUT)
+                self.kubectl.get_pod_phase(pod_name)),
+                  count=WAIT_POD_READY_TIMEOUT)
 
             args = self.kubectl.get_launch_args() + ['logs', '-f', pod_name]
             ProcessTimeout(idle_timeout, *args).run_sync()
@@ -107,7 +109,8 @@ class JobManager(object):
         exit_code = self.kubectl.delete_job(self.job_name)
         if exit_code != 0:
             raise JobOperationException(
-                "remove job {name} failed, exit code {exit_code}".format(name=self.job_name, exit_code=exit_code))
+                "remove job {name} failed, exit code {exit_code}".format(
+                    name=self.job_name, exit_code=exit_code))
 
 
 def retry(bool_fn, count=10, interval=1):

@@ -44,13 +44,12 @@ class Kubectl:
         :param str data: Manifest body to apply, only when ``file`` is ``-``
         :return: Return value of the command (0 for success)
         """
-        process = subprocess.Popen(
-            self.get_launch_args() + [
-                'apply',
-                '-f',
-                file,
-            ],
-            stdin=subprocess.PIPE)
+        process = subprocess.Popen(self.get_launch_args() + [
+            'apply',
+            '-f',
+            file,
+        ],
+                                   stdin=subprocess.PIPE)
 
         process.communicate(data)
 
@@ -83,8 +82,8 @@ class Kubectl:
         :raises JobNotFound: If no pod for that job is found
         """
         out = subprocess.check_output(self.get_launch_args() + [
-            'get', 'pod', '--all-namespaces', '--selector=job-name={}'.format(name), '-o',
-            'jsonpath={.items..metadata.name}'
+            'get', 'pod', '--all-namespaces', '--selector=job-name={}'.format(
+                name), '-o', 'jsonpath={.items..metadata.name}'
         ])
 
         if not out.strip():
@@ -99,9 +98,10 @@ class Kubectl:
         :param str name: Pod name
         :return: `Pod phase <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/>`_
         """
-        return subprocess.check_output(self.get_launch_args(
-        ) + ['get', 'pod', name, '-o', 'jsonpath={.status.phase}']).decode(
-            'utf8')
+        return subprocess.check_output(
+            self.get_launch_args() +
+            ['get', 'pod', name, '-o', 'jsonpath={.status.phase}']).decode(
+                'utf8')
 
     def get_pod_log(self, name):
         """
@@ -120,8 +120,8 @@ class Kubectl:
         :rtype: dict
         """
         return json.loads(
-            subprocess.check_output(
-                self.get_launch_args() + ['get', 'pod', name, '-o', 'json']))
+            subprocess.check_output(self.get_launch_args() +
+                                    ['get', 'pod', name, '-o', 'json']))
 
     def delete_job(self, name):
         """
@@ -144,12 +144,13 @@ class Kubectl:
         :rtype: JobStatus
         :raises: KeyError in case there is no status in response
         """
-        job = subprocess.check_output(
-            self.get_launch_args() + ['get', 'job', name, '-o', 'json'])
+        job = subprocess.check_output(self.get_launch_args() +
+                                      ['get', 'job', name, '-o', 'json'])
         return JobStatus(json.loads(job)['status'])
 
 
 class JobStatus(object):
+
     def __init__(self, json_dict):
         self.json_dict = json_dict
 
