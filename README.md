@@ -52,7 +52,7 @@ docker run -v `pwd`:/projects/ --rm wongnai/eastern eastern generate /projects/k
 3. Run `eastern` to verify that it is installed.
 
 ## Usage
-### Template language 
+### Template language
 At its core, Eastern is a YAML templating tool. Eastern provides the following commands as YAML comment.
 
 - `load? file_1.yaml, file_2.yaml ...`: Load the first file available
