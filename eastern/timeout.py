@@ -8,8 +8,8 @@ class ProcessTimeout:
     _timed_out = False
 
     def __init__(self, timeout, *args, **kwargs):
-        assert 'stdin' not in kwargs
-        assert 'stdout' not in kwargs
+        assert "stdin" not in kwargs
+        assert "stdout" not in kwargs
 
         self.timeout = timeout
         self.args = args
@@ -25,10 +25,8 @@ class ProcessTimeout:
 
     async def run(self, loop):
         self._subprocess = await asyncio.create_subprocess_exec(
-            stdout=asyncio.subprocess.PIPE,
-            stderr=sys.stderr,
-            *self.args,
-            **self.kwargs)
+            stdout=asyncio.subprocess.PIPE, stderr=sys.stderr, *self.args, **self.kwargs
+        )
         terminated = asyncio.ensure_future(self._subprocess.wait())
         try:
             self.set_timeout(loop)
@@ -36,7 +34,7 @@ class ProcessTimeout:
             last_line = None
             while not terminated.done() and not self._timed_out:
                 try:
-                    line = await self._subprocess.stdout.readuntil(b'\n')
+                    line = await self._subprocess.stdout.readuntil(b"\n")
                 except asyncio.IncompleteReadError as e:
                     sys.stdout.buffer.write(e.partial)
                     break

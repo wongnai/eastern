@@ -5,8 +5,7 @@ from stevedore.driver import DriverManager
 
 
 class BaseFormatter(ABC):
-
-    def __init__(self, raw, path='', env=None):
+    def __init__(self, raw, path="", env=None):
         self.raw = raw
 
         if not isinstance(path, PurePath):
@@ -29,8 +28,8 @@ def format(filename, env=None):
     :type filename: str or :py:class:`pathlib.Path`
     :param dict[str,str] env: List of variables
     """
-    ext = str(filename).split('.')[-1]
-    driver = DriverManager('eastern.formatter', ext)
+    ext = str(filename).split(".")[-1]
+    driver = DriverManager("eastern.formatter", ext)
     driver.propagate_map_exceptions = True
     env = env or {}
 

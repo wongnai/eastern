@@ -4,10 +4,10 @@ metadata:
   name: sentry
 spec:
   rules:
-  - host: sentry-prod.mysite.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: sentry
-          servicePort: 80
+    - host: sentry-prod.mysite.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: sentry
+              servicePort: 80

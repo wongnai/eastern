@@ -9,7 +9,6 @@ WAIT_POD_READY_TIMEOUT = 30 * 60  # 30 mins
 
 
 class JobManager(object):
-
     def __init__(self, kubectl, job_name):
         self.kubectl = kubectl
         self.job_name = job_name
@@ -64,7 +63,8 @@ class JobManager(object):
         """
         if not self.is_pod_scheduled():
             raise JobOperationException(
-                "Wait for completion must run after pod was scheduled")
+                "Wait for completion must run after pod was scheduled"
+            )
 
         pod_names = self.get_pod_names()
         for pod_name in pod_names:
@@ -72,11 +72,12 @@ class JobManager(object):
                 return
 
             # wait for pod phrase to be ready before tail log
-            retry(lambda: is_pod_phrase_can_get_log(
-                self.kubectl.get_pod_phase(pod_name)),
-                  count=WAIT_POD_READY_TIMEOUT)
+            retry(
+                lambda: is_pod_phrase_can_get_log(self.kubectl.get_pod_phase(pod_name)),
+                count=WAIT_POD_READY_TIMEOUT,
+            )
 
-            args = self.kubectl.get_launch_args() + ['logs', '-f', pod_name]
+            args = self.kubectl.get_launch_args() + ["logs", "-f", pod_name]
             ProcessTimeout(idle_timeout, *args).run_sync()
 
     def get_pod_name(self):
@@ -110,7 +111,9 @@ class JobManager(object):
         if exit_code != 0:
             raise JobOperationException(
                 "remove job {name} failed, exit code {exit_code}".format(
-                    name=self.job_name, exit_code=exit_code))
+                    name=self.job_name, exit_code=exit_code
+                )
+            )
 
 
 def retry(bool_fn, count=10, interval=1):
@@ -124,7 +127,7 @@ def retry(bool_fn, count=10, interval=1):
 
 
 def is_pod_phrase_can_get_log(phrase):
-    logger.debug('Pod phrase: %s', phrase)
+    logger.debug("Pod phrase: %s", phrase)
     return phrase and phrase.lower() in ["running", "succeeded", "failed"]
 
 

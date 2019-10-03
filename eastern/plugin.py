@@ -105,7 +105,6 @@ class EasternPlugin(ABC):
 
 
 class ChainMixin:
-
     def chain(self, func, value, *args, **kwargs):
         for extension in self:
             value = getattr(extension.obj, func)(value, *args, **kwargs)
@@ -114,7 +113,6 @@ class ChainMixin:
 
 
 class MapIgnoreEmptyMixin:
-
     def map(self, *args, **kwargs):
         try:
             return super().map(*args, **kwargs)
@@ -122,8 +120,9 @@ class MapIgnoreEmptyMixin:
             return []
 
 
-class ExtensionChainManager(ChainMixin, MapIgnoreEmptyMixin,
-                            extension.ExtensionManager):
+class ExtensionChainManager(
+    ChainMixin, MapIgnoreEmptyMixin, extension.ExtensionManager
+):
     pass
 
 
@@ -133,10 +132,9 @@ class ExtensionMayEmptyManager(MapIgnoreEmptyMixin, extension.ExtensionManager):
 
 @functools.lru_cache(None)
 def get_plugin_manager():
-    return ExtensionChainManager(namespace='eastern.plugin',
-                                 invoke_on_load=True)
+    return ExtensionChainManager(namespace="eastern.plugin", invoke_on_load=True)
 
 
 @functools.lru_cache(None)
 def get_cli_manager():
-    return ExtensionMayEmptyManager(namespace='eastern.cli')
+    return ExtensionMayEmptyManager(namespace="eastern.cli")
