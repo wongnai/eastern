@@ -2,4 +2,4 @@
 .git
 __pycache__
 test_*.py
-.pre-commit-config
+.pre-commit-config.yaml
