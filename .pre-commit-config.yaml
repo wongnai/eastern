@@ -13,7 +13,7 @@ repos:
     rev: 19.3b0
     hooks:
       - id: black
-        entry: black --target-version py36
+        entry: black -l 120 --target-version py36
   - repo: https://github.com/prettier/prettier.git
     rev: 1.18.2
     hooks:
