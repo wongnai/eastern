@@ -10,24 +10,24 @@ A Kubernetes templating and deployment tool.
 
 ## Table of Contents
 
-* [Features](#features)
-* [Installation](#installation)
-  * [Installing from PyPI](#installing-from-pypi)
-  * [Running from Docker Image](#running-from-docker-image)
-  * [Installing from Git](#installing-from-git)
-* [Usage](#usage)
-  * [Template language](#template-language)
-  * [Deploy](#deploy)
-  * [Deploy jobs](#deploy-jobs)
-* [Plugin](#plugin)
-* [License](#license)
+- [Features](#features)
+- [Installation](#installation)
+  - [Installing from PyPI](#installing-from-pypi)
+  - [Running from Docker Image](#running-from-docker-image)
+  - [Installing from Git](#installing-from-git)
+- [Usage](#usage)
+  - [Template language](#template-language)
+  - [Deploy](#deploy)
+  - [Deploy jobs](#deploy-jobs)
+- [Plugin](#plugin)
+- [License](#license)
 
 ## Features
 
-* Simple, logicless template engine designed for YAML
-* Work with multiple environments
-* In use in production at [Wongnai](https://www.wongnai.com)
-* Extensible plugin architecture
+- Simple, logicless template engine designed for YAML
+- Work with multiple environments
+- In use in production at [Wongnai](https://www.wongnai.com)
+- Extensible plugin architecture
 
 ## Installation
 
@@ -52,7 +52,9 @@ docker run -v `pwd`:/projects/ --rm wongnai/eastern eastern generate /projects/k
 3. Run `eastern` to verify that it is installed.
 
 ## Usage
-### Template language 
+
+### Template language
+
 At its core, Eastern is a YAML templating tool. Eastern provides the following commands as YAML comment.
 
 - `load? file_1.yaml, file_2.yaml ...`: Load the first file available
@@ -87,6 +89,7 @@ Available options:
 - `--no-wait`: Exit after running `kubectl` without waiting for rolling deploy
 
 ### Deploy jobs
+
 Eastern comes with [Job](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) deployment tool.
 
 To start a job, run `eastern job path/to/file.yaml namespace image_tag`. The file must have the job as its only document. Eastern will add `image_tag` as job suffix, deploy, wait until job's completion and remove the job.
@@ -94,9 +97,11 @@ To start a job, run `eastern job path/to/file.yaml namespace image_tag`. The fil
 Supplied `image_tag` is available in the template as `${IMAGE_TAG}`.
 
 ## Plugin
+
 Eastern is extensible. We use Eastern plugins ourselves. The API docs is available on [Read the Docs](https://eastern.readthedocs.io/en/latest/).
 
 ## License
+
 (C) 2017 Wongnai Media Co, Ltd.
 
 Eastern is licensed under [MIT License](LICENSE)

@@ -1,0 +1,21 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks.git
+    rev: v1.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-docstring-first
+      - id: trailing-whitespace
+      - id: check-symlinks
+  - repo: https://github.com/ambv/black.git
+    rev: 19.3b0
+    hooks:
+      - id: black
+        entry: black -l 120 --target-version py36
+  - repo: https://github.com/prettier/prettier.git
+    rev: 1.18.2
+    hooks:
+      - id: prettier
+        files: \.(css|less|scss|ts|tsx|graphql|gql|js|jsx|md|yaml|yml)$

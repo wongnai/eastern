@@ -12,9 +12,9 @@ def flatten(l):
 
 
 def resolve_file(files, base):
-    '''Resolve a list of files to the first one that exists
-    
-    Returns a path object or :py:const:`None` if no file exists'''
+    """Resolve a list of files to the first one that exists
+
+    Returns a path object or :py:const:`None` if no file exists"""
     if not isinstance(base, Path):
         base = Path(base)
 

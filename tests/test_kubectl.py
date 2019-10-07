@@ -21,24 +21,23 @@ JOB_RESPONSE = """
 }
 """
 
-NO_STATUS_JOB_RESPONSE = '{}'
+NO_STATUS_JOB_RESPONSE = "{}"
 
 
-@patch('subprocess.check_output')
+@patch("subprocess.check_output")
 def test_get_job_status(check_output):
     check_output.return_value = JOB_RESPONSE
     kubectl = Kubectl()
     status = kubectl.get_job_status("test-job")
 
-    check_output.assert_called_with(
-        ['kubectl', 'get', 'job', 'test-job', '-o', 'json'])
+    check_output.assert_called_with(["kubectl", "get", "job", "test-job", "-o", "json"])
 
     assert status.succeeded == 1
     assert status.active == 0
     assert status.failed == 0
 
 
-@patch('subprocess.check_output')
+@patch("subprocess.check_output")
 def test_get_job_status_failed(check_output):
     check_output.return_value = NO_STATUS_JOB_RESPONSE
     kubectl = Kubectl()

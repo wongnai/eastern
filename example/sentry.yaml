@@ -14,11 +14,11 @@ spec:
         app: sentry
     spec:
       containers:
-      - name: sentry
-        image: sentry:${IMAGE_TAG}
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "1m"
-        env:
-        # load! overrides/env-${NAMESPACE}.yaml, overrides/env.yaml
+        - name: sentry
+          image: sentry:${IMAGE_TAG}
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "1m"
+          env:
+          # load! overrides/env-${NAMESPACE}.yaml, overrides/env.yaml
