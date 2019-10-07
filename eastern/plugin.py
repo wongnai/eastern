@@ -120,9 +120,7 @@ class MapIgnoreEmptyMixin:
             return []
 
 
-class ExtensionChainManager(
-    ChainMixin, MapIgnoreEmptyMixin, extension.ExtensionManager
-):
+class ExtensionChainManager(ChainMixin, MapIgnoreEmptyMixin, extension.ExtensionManager):
     pass
 
 

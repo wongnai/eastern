@@ -10,13 +10,7 @@ setup(
     version="4.4.1",
     packages=find_packages(),
     url="https://github.com/wongnai/eastern",
-    install_requires=[
-        "Click~=6.7",
-        "click-log~=0.3.2",
-        "PyYAML~=4.2b4",
-        "stevedore~=1.29.0",
-        "pre-commit~=1.18.3",
-    ],
+    install_requires=["Click~=6.7", "click-log~=0.3.2", "PyYAML~=4.2b4", "stevedore~=1.29.0", "pre-commit~=1.18.3"],
     setup_requires=["pytest-runner"],
     tests_require=["pytest", "pytest-asyncio"],
     entry_points={

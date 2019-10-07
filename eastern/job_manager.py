@@ -62,9 +62,7 @@ class JobManager(object):
         :param idle_timeout int: time to wait in seconds
         """
         if not self.is_pod_scheduled():
-            raise JobOperationException(
-                "Wait for completion must run after pod was scheduled"
-            )
+            raise JobOperationException("Wait for completion must run after pod was scheduled")
 
         pod_names = self.get_pod_names()
         for pod_name in pod_names:
@@ -72,10 +70,7 @@ class JobManager(object):
                 return
 
             # wait for pod phrase to be ready before tail log
-            retry(
-                lambda: is_pod_phrase_can_get_log(self.kubectl.get_pod_phase(pod_name)),
-                count=WAIT_POD_READY_TIMEOUT,
-            )
+            retry(lambda: is_pod_phrase_can_get_log(self.kubectl.get_pod_phase(pod_name)), count=WAIT_POD_READY_TIMEOUT)
 
             args = self.kubectl.get_launch_args() + ["logs", "-f", pod_name]
             ProcessTimeout(idle_timeout, *args).run_sync()
@@ -110,9 +105,7 @@ class JobManager(object):
         exit_code = self.kubectl.delete_job(self.job_name)
         if exit_code != 0:
             raise JobOperationException(
-                "remove job {name} failed, exit code {exit_code}".format(
-                    name=self.job_name, exit_code=exit_code
-                )
+                "remove job {name} failed, exit code {exit_code}".format(name=self.job_name, exit_code=exit_code)
             )
 
 

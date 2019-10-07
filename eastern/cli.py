@@ -104,9 +104,7 @@ def parse_set(ctx, param, value):
 
     for item in value:
         if "=" not in item:
-            raise click.BadParameter(
-                "{item} must be in format KEY=value".format(item=item)
-            )
+            raise click.BadParameter("{item} must be in format KEY=value".format(item=item))
 
         item = item.split("=", maxsplit=1)
         out.append(item)
@@ -117,9 +115,7 @@ def parse_set(ctx, param, value):
 @cli.command()
 @click.argument("file", type=click.Path(exists=True))
 @click.argument("namespace", default="default")
-@click.option(
-    "--set", "-s", callback=parse_set, multiple=True, help="Additional variables to set"
-)
+@click.option("--set", "-s", callback=parse_set, multiple=True, help="Additional variables to set")
 def generate(file, namespace, **kwargs):
     format_yaml(file, namespace, extra=kwargs["set"])
 
@@ -127,16 +123,10 @@ def generate(file, namespace, **kwargs):
 @cli.command()
 @click.argument("file", type=click.Path(exists=True))
 @click.argument("namespace", default="default")
-@click.option(
-    "--set", "-s", callback=parse_set, multiple=True, help="Additional variables to set"
-)
-@click.option(
-    "--edit", "-e", is_flag=True, help="Edit generated manifest before deploying"
-)
+@click.option("--set", "-s", callback=parse_set, multiple=True, help="Additional variables to set")
+@click.option("--edit", "-e", is_flag=True, help="Edit generated manifest before deploying")
 @click.option("--wait/--no-wait", default=True, help="Wait for deployment to finish")
-@click.option(
-    "--timeout", default=300, help="Wait timeout (default 300s, 0 to disable)"
-)
+@click.option("--timeout", default=300, help="Wait timeout (default 300s, 0 to disable)")
 @click.pass_context
 def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
     manifest = format_yaml(file, namespace, edit=edit, extra=kwargs["set"])
@@ -163,12 +153,8 @@ def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
 @click.argument("namespace", default="default")
 @click.argument("tag")
 @click.option("--set", "-s", callback=parse_set, multiple=True)
-@click.option(
-    "--edit", "-e", is_flag=True, help="Edit generated manifest before deploying"
-)
-@click.option(
-    "--timeout", default=300, help="Wait timeout (default 300s, 0 to disable)"
-)
+@click.option("--edit", "-e", is_flag=True, help="Edit generated manifest before deploying")
+@click.option("--timeout", default=300, help="Wait timeout (default 300s, 0 to disable)")
 @click.pass_context
 def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
     exit_status = 0

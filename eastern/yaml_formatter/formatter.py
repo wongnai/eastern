@@ -55,9 +55,7 @@ class Formatter(BaseFormatter):
 
     def parse_lines(self, body):
         body_lines = body.split(os.linesep)
-        return os.linesep.join(
-            utils.flatten([self.parse_line(line) for line in body_lines])
-        )
+        return os.linesep.join(utils.flatten([self.parse_line(line) for line in body_lines]))
 
     def parse_line(self, line):
         if "#" not in line:
