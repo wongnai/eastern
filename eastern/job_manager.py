@@ -74,6 +74,8 @@ class JobManager(object):
 
             args = self.kubectl.get_launch_args() + ["logs", "-f", pod_name]
             ProcessTimeout(idle_timeout, *args).run_sync()
+            # wait for job completion
+            retry(lambda: self.is_completed(), count=10)
 
     def get_pod_name(self):
         """
