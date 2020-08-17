@@ -7,7 +7,7 @@ setup(
     description="Simple Kubernetes Deployment",
     long_description=open(os.path.join(os.path.dirname(__file__), "README.md")).read(),
     long_description_content_type="text/markdown",
-    version="4.4.1",
+    version="4.5.1",
     packages=find_packages(),
     url="https://github.com/wongnai/eastern",
     install_requires=["Click~=6.7", "click-log~=0.3.2", "PyYAML~=4.2b4", "stevedore~=1.29.0", "pre-commit~=1.18.3"],
