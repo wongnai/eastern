@@ -139,6 +139,14 @@ class Kubectl:
         job = subprocess.check_output(self.get_launch_args() + ["get", "job", name, "-o", "json"])
         return JobStatus(json.loads(job)["status"])
 
+    def list_pod(self):
+        """
+        Lists a pod
+
+        :param str namespace: Namespace name
+        :rtype: str
+        """
+        return json.loads(subprocess.check_output(self.get_launch_args() + ["get", "pod", "-o", "json"]))
 
 class JobStatus(object):
     def __init__(self, json_dict):
