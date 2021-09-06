@@ -1,7 +1,9 @@
 import asyncio
+from os import name
 import subprocess
 import sys
 import time
+import json
 
 import click
 import click_log
@@ -63,6 +65,43 @@ def wait_for_rolling_deploy(ctx, namespace, manifest, timeout=None):
         if exit_code != 0:
             raise subprocess.CalledProcessError(returncode=exit_code, cmd="")
 
+def logs_for_error_rolling_deploy(ctx, namespace, manifest):
+    ctx.obj["kubectl"].namespace = namespace
+    pods = ctx.obj["kubectl"].list_pod()
+    unfinished_pod = []
+    for pod in pods["items"]:
+        isPodReady = True
+        for containerStatus in pod["status"]["containerStatuses"]:
+            if not containerStatus["ready"]:
+                isPodReady = False
+
+        if not isPodReady:
+            unfinished_pod.append(pod)
+
+    for pod in unfinished_pod:
+        print_error("Cannot start pod name {}".format(pod["metadata"]["name"]))
+        print_error("--------------------------------------------------------")
+        for containerStatus in pod["status"]["containerStatuses"]:
+            if "running" in containerStatus["state"]:
+                print_error(tail_string_by_line(ctx.obj["kubectl"].get_pod_log(pod["metadata"]["name"]).decode("utf-8"), 100))
+            if "waiting" in containerStatus["state"]:
+                print_error(json.dumps(containerStatus["state"]["waiting"]))
+                print_error("--------------------------------------------------------")
+
+def tail_string_by_line(s, line):
+    count = 0
+    result = []
+    texts = s.splitlines()
+    texts.reverse()
+
+    for t in texts:
+        result.append(t)
+        count += 1
+        if count > line:
+            break
+
+    result.reverse()
+    return "\n".join(result)
 
 class Timeout(Exception):
     pass
@@ -144,6 +183,7 @@ def deploy(ctx, file, namespace, edit, wait, timeout, **kwargs):
         print_error("Improper exit with code " + str(e.returncode) + ", exiting...")
         sys.exit(3)
     except subprocess.TimeoutExpired:
+        logs_for_error_rolling_deploy(ctx, namespace, manifest)
         print_error("Rollout took too long, exiting...")
         sys.exit(2)
 
