@@ -202,7 +202,7 @@ def job(ctx, file, namespace, tag, edit, timeout, **kwargs):
     manifest = format_yaml(file, namespace, edit=edit, extra=kwargs["set"], print=False)
 
     # Modify the name to contain imageTag
-    manifest = list(yaml.load_all(manifest))
+    manifest = list(yaml.safe_load_all(manifest))
 
     found_job = False
     for item in manifest:
