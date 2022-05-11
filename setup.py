@@ -7,12 +7,13 @@ setup(
     description="Simple Kubernetes Deployment",
     long_description=open(os.path.join(os.path.dirname(__file__), "README.md")).read(),
     long_description_content_type="text/markdown",
-    version="4.5.1",
+    version="5.0.0",
     packages=find_packages(),
     url="https://github.com/wongnai/eastern",
-    install_requires=["Click~=6.7", "click-log~=0.3.2", "PyYAML~=4.2b4", "stevedore~=1.29.0", "pre-commit~=1.18.3"],
+    install_requires=["Click~=6.7", "click-log~=0.3.2", "PyYAML~=6.0", "stevedore~=1.29.0"],
     setup_requires=["pytest-runner"],
     tests_require=["pytest", "pytest-asyncio"],
+    python_requires=">=3.9",
     entry_points={
         "console_scripts": ["eastern = eastern.cli:cli"],
         "eastern.command": [

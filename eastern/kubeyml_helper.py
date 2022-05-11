@@ -24,7 +24,7 @@ def is_rolling_resource(doc):
 
 
 def get_supported_rolling_resources(text):
-    yml = yaml.load_all(text)
+    yml = yaml.safe_load_all(text)
     results = []
     for doc in yml:
         if is_rolling_resource(doc):
